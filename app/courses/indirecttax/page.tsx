@@ -149,6 +149,7 @@ export default function IndirectTaxPage() {
               </h1>
               
             </div>
+            
           </div>
         </div>
 
