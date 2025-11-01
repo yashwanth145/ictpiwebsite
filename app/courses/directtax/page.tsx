@@ -263,7 +263,7 @@ export default function DirectTaxPage() {
                 Course
               </div>
               <h1 className="mt-1 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-                Direct Tax Laws
+                Direct Tax Laws Compliance
               </h1>
               <p className="mt-2 text-gray-600 text-sm sm:text-base">
                 Comprehensive study materials covering domestic and international taxation concepts.

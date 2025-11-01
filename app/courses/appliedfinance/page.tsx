@@ -169,7 +169,7 @@ export default function AppliedFinancePage() {
                 Course
               </div>
               <h1 className="mt-1 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-                Applied Finance
+                Applied Finance Accounting and Ethics
               </h1>
             </div>
           </div>

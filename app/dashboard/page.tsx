@@ -175,7 +175,7 @@ export default function Dashboard() {
     { title: "Indirect Tax Laws Compliance (ITXL)", route: "indirecttax", image: accountancy },
     { title: "Business Regulatory Laws Compliance", route: "business", image: complaince },
     { title: "Direct Tax Laws Compliance (DTLC)", route: "directtax", image: directax },
-    { title: "Applied Financial Accounting & EL", route: "appliedfinance", image: appliedfinance },
+    { title: "Applied Financial Accounting & Ethics", route: "appliedfinance", image: appliedfinance },
   ];
 
   /* ---------- Live & Upcoming Filters ---------- */

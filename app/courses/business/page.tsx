@@ -153,7 +153,7 @@ export default function BusinessRegulatoryPage() {
                 Course
               </div>
               <h1 className="mt-1 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-                Business Regulatory Framework
+                Business Regulatory Laws Compliance
               </h1>
               
             </div>

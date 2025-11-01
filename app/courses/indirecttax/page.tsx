@@ -133,7 +133,7 @@ export default function IndirectTaxPage() {
             <div className="md:w-64 flex-shrink-0">
               <Image
                 src={indirecttax}
-                alt="Indirect Taxation (GST & Customs)"
+                alt="Indirect Taxation Laws and Compliance"
                 width={300}
                 height={200}
                 className="w-full h-48 object-cover md:h-full md:w-full"
@@ -145,7 +145,7 @@ export default function IndirectTaxPage() {
                 Course
               </div>
               <h1 className="mt-1 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-                Indirect Taxation (GST & Customs)
+                Indirect Taxation Laws and Compliance
               </h1>
               
             </div>
