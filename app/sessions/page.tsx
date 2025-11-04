@@ -14,6 +14,7 @@ import {
   Calendar,
   Clock,
   Link2,
+  Lock
 } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
@@ -313,6 +314,12 @@ export default function Dashboard() {
                               {session.sessionlink}
                             </a>
                           </div>
+
+                          <div className="flex items-center gap-2">
+                            <Lock className="w-4 h-4 text-blue-600" />
+                            <span>password:ICTPI</span>
+                          </div>
+
                         </div>
                       </div>
 
