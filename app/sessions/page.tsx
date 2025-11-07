@@ -162,6 +162,12 @@ export default function Dashboard() {
             >
               <ClipboardList className="w-5 h-5" /> Sessions
             </Link>
+            <Link
+              href="/previous"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+            >
+              <ClipboardList className="w-5 h-5" /> Previous Sessions
+            </Link>
           </nav>
         </aside>
 
@@ -178,6 +184,10 @@ export default function Dashboard() {
           <Link href="/sessions" className="flex flex-col items-center text-xs text-gray-600">
             <ClipboardList className="w-6 h-6" />
             <span className="mt-1">Sessions</span>
+          </Link>
+          <Link href="/previous" className="flex flex-col items-center text-xs text-gray-600">
+            <ClipboardList className="w-6 h-6" />
+            <span className="mt-1">Previous sessions</span>
           </Link>
           <button onClick={signOut} className="flex flex-col items-center text-xs text-red-600">
             <LogOut className="w-6 h-6" />
