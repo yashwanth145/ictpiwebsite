@@ -239,7 +239,7 @@ export default function PreviousSessions() {
         </header>
 
         {/* Scrollable Main Area */}
-        <main className="flex-1 pt-24 md:pt-35 pb-24 md:pb-12 px-5 md:px-8 bg-gradient-to-br from-gray-50 to-gray-100 overflow-y-auto">
+<main className="flex-1 pt-32 md:pt-38 pb-24 md:pb-12 px-5 md:px-8 bg-gradient-to-br from-gray-50 to-gray-100 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 mt-4">
               Previous Sessions
