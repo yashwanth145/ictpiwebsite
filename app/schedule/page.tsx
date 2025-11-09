@@ -116,7 +116,9 @@ export default function MemberSearchPage() {
           <Link href="/results" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
             <ClipboardList className="w-5 h-5 mr-3" /> Result
           </Link>
-          
+          <Link href="/member-search" className="flex items-center px-5 py-2 bg-blue-500">
+            <Search className="w-5 h-5 mr-3" /> Member Search
+          </Link>
           <Link href="/sessions" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
             <ClipboardList className="w-5 h-5 mr-3" /> Sessions
           </Link>
@@ -230,7 +232,7 @@ export default function MemberSearchPage() {
 
                 {/* Footer */}
                 <div className="bg-gray-50 px-8 py-5 text-center text-sm text-gray-600 border-t">
-                  Your information is securely fetched from the official ICTPI database.
+                  Your information is securely fetched from the official database.
                 </div>
               </div>
             )}
