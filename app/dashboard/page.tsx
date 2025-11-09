@@ -275,7 +275,7 @@ export default function Dashboard() {
               href="/vlogs"
               className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
             >
-              <ClipboardList className="w-5 h-5 mr-3" /> Blogs
+              <ClipboardList className="w-5 h-5 mr-3" /> B/Vlogs
             </Link>
             <Link
               href="/schedule"
@@ -301,7 +301,7 @@ export default function Dashboard() {
             <History className="w-5 h-5 mb-1" /> Previous Sessions
           </Link>
            <Link href="/vlogs" className="flex flex-col items-center text-xs">
-            <ClipboardList className="w-5 h-5 mb-1" /> Blogs
+            <ClipboardList className="w-5 h-5 mb-1" /> B/Vlogs
           </Link>
           <Link
               href="/schedule"

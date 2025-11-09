@@ -189,13 +189,13 @@ export default function PreviousSessions() {
             href="/vlogs"
             className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
           >
-            <ClipboardList className="w-5 h-5 mr-3" /> Blogs
+            <ClipboardList className="w-5 h-5 mr-3" /> B/Vlogs
           </Link>
           <Link
             href="/schedule"
             className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
           >
-            <GraduationCap className="w-5 h-5 mr-3" /> Schedule
+            <GraduationCap className="w-5 h-5 mr-3" /> Exam schedule
           </Link>
         </nav>
       </aside>
@@ -216,10 +216,10 @@ export default function PreviousSessions() {
             <History className="w-6 h-6 mb-1" /> Prev
           </Link>
           <Link href="/vlogs" className="flex flex-col items-center text-xs text-gray-700">
-            <ClipboardList className="w-6 h-6 mb-1" /> Blogs
+            <ClipboardList className="w-6 h-6 mb-1" /> B/Vlogs
           </Link>
           <Link href="/schedule" className="flex flex-col items-center text-xs text-gray-700">
-            <GraduationCap className="w-6 h-6 mb-1" /> Schedule
+            <GraduationCap className="w-6 h-6 mb-1" /> Exam schedule
           </Link>
           <button onClick={handleSignOut} className="flex flex-col items-center text-xs text-red-600">
             <LogOut className="w-6 h-6 mb-1" /> Logout
