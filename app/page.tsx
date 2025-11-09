@@ -76,7 +76,7 @@ export default function LoginPage() {
         <div className="space-y-4">
           <input
             type="text"
-            placeholder="User ID"
+            placeholder="Member ID"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
             className="w-full p-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition bg-blue-50 text-blue-900 placeholder-blue-400"
