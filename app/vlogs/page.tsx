@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import { LayoutDashboard, ClipboardList, User2, LogOut, History } from "lucide-react";
+import { LayoutDashboard, ClipboardList, User2, LogOut, History,GraduationCap } from "lucide-react";
 import Image from "next/image";
 
 // Assets
@@ -129,6 +129,13 @@ export default function Dashboard() {
               <ClipboardList className="w-5 h-5 mr-3" />
               Vlogs
             </Link>
+            
+            <Link
+              href="/schedule"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+            >
+              <GraduationCap className="w-5 h-5" /> Schedule
+            </Link>
           </nav>
         </aside>
 
@@ -154,6 +161,13 @@ export default function Dashboard() {
             <ClipboardList className="w-5 h-5 mb-1" />
             Vlogs
           </Link>
+          
+            <Link
+              href="/schedule"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+            >
+              <GraduationCap className="w-5 h-5" /> Schedule
+            </Link>
           <button
             onClick={handleSignOut}
             className="flex flex-col items-center text-xs"

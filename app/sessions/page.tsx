@@ -14,7 +14,9 @@ import {
   Calendar,
   Clock,
   Link2,
-  Lock
+  Lock,
+  History,
+  GraduationCap
 } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
@@ -166,7 +168,19 @@ export default function Dashboard() {
               href="/previous"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
             >
-              <ClipboardList className="w-5 h-5" /> Previous Sessions
+              <History className="w-5 h-5" /> Previous Sessions
+            </Link>
+            <Link
+              href="/vlogs"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+            >
+              <ClipboardList className="w-5 h-5" /> Vlogs
+            </Link>
+            <Link
+              href="/schedule"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+            >
+              <GraduationCap className="w-5 h-5" /> Schedule
             </Link>
           </nav>
         </aside>
@@ -189,6 +203,18 @@ export default function Dashboard() {
             <ClipboardList className="w-6 h-6" />
             <span className="mt-1">Previous sessions</span>
           </Link>
+          <Link
+              href="/vlogs"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+            >
+              <ClipboardList className="w-5 h-5" /> Vlogs
+            </Link>
+            <Link
+              href="/schedule"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+            >
+              <GraduationCap className="w-5 h-5" /> Schedule
+            </Link>
           <button onClick={signOut} className="flex flex-col items-center text-xs text-red-600">
             <LogOut className="w-6 h-6" />
             <span className="mt-1">Logout</span>
