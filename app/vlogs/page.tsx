@@ -4,14 +4,10 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import { LayoutDashboard, ClipboardList, User2, LogOut, History,GraduationCap } from "lucide-react";
+import { LayoutDashboard, ClipboardList, User2, LogOut, History, GraduationCap } from "lucide-react";
 import Image from "next/image";
 
 // Assets
-import accountancy from "../../assets/Accountancy.webp";
-import complaince from "../../assets/complaiance.webp";
-import directax from "../../assets/directtax.webp";
-import appliedfinance from "../../assets/fourthimage.webp";
 import logo from "../../assets/ICTPL_image.png";
 
 // Email → Name mapping
@@ -64,30 +60,6 @@ export default function Dashboard() {
     return auth.user?.email?.split("@")[0] || "User";
   };
 
-  /* ---------- Course Data ---------- */
-  const courses = [
-    {
-      title: "Indirect Tax Laws Compliance (ITXL)",
-      route: "indirecttax",
-      image: accountancy,
-    },
-    {
-      title: "Business Regulatory Laws Compliance",
-      route: "business",
-      image: complaince,
-    },
-    {
-      title: "Direct Tax Laws Compliance (DTLC)",
-      route: "directtax",
-      image: directax,
-    },
-    {
-      title: "Applied Financial Accounting & Ethics",
-      route: "appliedfinance",
-      image: appliedfinance,
-    },
-  ];
-
   return (
     <>
       <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
@@ -129,7 +101,6 @@ export default function Dashboard() {
               <ClipboardList className="w-5 h-5 mr-3" />
               B/Vlogs
             </Link>
-            
             <Link
               href="/schedule"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
@@ -157,17 +128,14 @@ export default function Dashboard() {
             <History className="w-5 h-5 mb-1" />
             Previous Sessions
           </Link>
-           <Link href="/vlogs" className="flex flex-col items-center text-xs">
+          <Link href="/vlogs" className="flex flex-col items-center text-xs">
             <ClipboardList className="w-5 h-5 mb-1" />
-            B/Vlogs
+            B/VLogs
           </Link>
-          
-            <Link
-              href="/schedule"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
-            >
-              <GraduationCap className="w-5 h-5" /> Exam schedule
-            </Link>
+          <Link href="/schedule" className="flex flex-col items-center text-xs">
+            <GraduationCap className="w-5 h-5 mb-1" />
+            Schedule
+          </Link>
           <button
             onClick={handleSignOut}
             className="flex flex-col items-center text-xs"
@@ -206,24 +174,14 @@ export default function Dashboard() {
             </button>
           </header>
 
-          {/* Course Cards Grid */}
-          <main className="flex-1 p-4 sm:p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6 lg:gap-8 xl:gap-10 overflow-y-auto mb-[80px] md:mb-0 bg-gray-100">
-            {courses.map((course, index) => (
-              <div
-                key={index}
-                onClick={() => router.push(`/vlogs/${course.route}`)}
-                className="bg-white shadow-md rounded-xl p-6 sm:p-8 lg:p-4 hover:shadow-xl transition cursor-pointer transform hover:-translate-y-1"
-              >
-                <Image
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-40 object-cover rounded-md mb-6"
-                />
-                <h3 className="text-lg font-semibold text-gray-800 text-center">
-                  {course.title}
-                </h3>
-              </div>
-            ))}
+          {/* Coming Soon Message */}
+          <main className="flex-1 flex items-center justify-center bg-gray-100">
+            <div className="text-center p-10 bg-white rounded-2xl shadow-lg">
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">
+                <em>Coming Soon</em>
+              </h1>
+              
+            </div>
           </main>
         </div>
       </div>
