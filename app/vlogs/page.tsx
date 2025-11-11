@@ -4,7 +4,15 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import { LayoutDashboard, ClipboardList, User2, LogOut, History, GraduationCap ,ClipboardPenLine} from "lucide-react";
+import {
+  LayoutDashboard,
+  ClipboardList,
+  User2,
+  LogOut,
+  History,
+  GraduationCap,
+  ClipboardPenLine,
+} from "lucide-react";
 import Image from "next/image";
 
 // Assets
@@ -37,7 +45,9 @@ export default function Dashboard() {
   }, [auth, router]);
 
   if (!auth || auth.loading) {
-    return <p className="text-center mt-10 text-gray-600">Loading...</p>;
+    return (
+      <p className="text-center mt-32 text-gray-600 text-lg">Loading...</p>
+    );
   }
   if (!auth.user) return null;
 
@@ -61,136 +71,140 @@ export default function Dashboard() {
   };
 
   return (
-    <>
-      <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:flex w-60 bg-[#0062cc] text-white flex-col">
-          <nav className="flex-1 mt-4 space-y-3">
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
+      {/* Sticky Left Sidebar with Logo */}
+      <aside className="hidden md:block w-64 bg-[#0062cc] text-white flex flex-col sticky top-0 h-screen overflow-y-auto">
+        {/* Logo Section */}
+        
+        {/* Navigation Links */}
+        <nav className="flex-1 px-4 py-6 space-y-2">
+          {[
+            { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+            { href: "/results", icon: ClipboardList, label: "Results" },
+            { href: "/sessions", icon: ClipboardList, label: "Sessions" },
+            { href: "/previous", icon: History, label: "Previous Sessions" },
+            { href: "/vlogs", icon: ClipboardList, label: "B/Vlogs" },
+            { href: "/schedule", icon: GraduationCap, label: "Exam Schedule" },
+            { href: "/modelpaper", icon: ClipboardPenLine, label: "Model Papers" },
+          ].map((item) => (
             <Link
-              href="/dashboard"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
+              key={item.href}
+              href={item.href}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium"
             >
-              <LayoutDashboard className="w-5 h-5 mr-3" />
-              Dashboard
+              <item.icon className="w-5 h-5" />
+              {item.label}
             </Link>
-            <Link
-              href="/results"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
-              <ClipboardList className="w-5 h-5 mr-3" />
-              Result
-            </Link>
-            <Link
-              href="/sessions"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
-              <ClipboardList className="w-5 h-5 mr-3" />
-              Sessions
-            </Link>
-            <Link
-              href="/previous"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
-              <History className="w-5 h-5 mr-3" />
-              Previous Sessions
-            </Link>
-            <Link
-              href="/vlogs"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
-              <ClipboardList className="w-5 h-5 mr-3" />
-              B/Vlogs
-            </Link>
-            <Link
-              href="/schedule"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
-            >
-              <GraduationCap className="w-5 h-5" /> Exam schedule
-            </Link>
-            <Link href="/modelpaper" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
-              <ClipboardPenLine className="w-5 h-5 mr-3" /> Model papers
-            </Link>
-          </nav>
-        </aside>
-
-        {/* Mobile Bottom Navigation */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0062cc]/95 backdrop-blur-sm text-white flex justify-around items-center py-2 shadow-lg z-50">
-          <Link href="/dashboard" className="flex flex-col items-center text-xs">
-            <LayoutDashboard className="w-5 h-5 mb-1" />
-            Dashboard
-          </Link>
-          <Link href="/results" className="flex flex-col items-center text-xs">
-            <ClipboardList className="w-5 h-5 mb-1" />
-            Results
-          </Link>
-          <Link href="/sessions" className="flex flex-col items-center text-xs">
-            <ClipboardList className="w-5 h-5 mb-1" />
-            Sessions
-          </Link>
-          <Link href="/previous" className="flex flex-col items-center text-xs">
-            <History className="w-5 h-5 mb-1" />
-            Previous Sessions
-          </Link>
-          <Link href="/vlogs" className="flex flex-col items-center text-xs">
-            <ClipboardList className="w-5 h-5 mb-1" />
-            B/VLogs
-          </Link>
-          <Link href="/schedule" className="flex flex-col items-center text-xs">
-            <GraduationCap className="w-5 h-5 mb-1" />
-            Schedule
-          </Link>
-          <Link href="/modelpaper" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
-              <ClipboardPenLine className="w-5 h-5 mr-3" /> Model papers
-            </Link>
-          <button
-            onClick={handleSignOut}
-            className="flex flex-col items-center text-xs"
-          >
-            <LogOut className="w-5 h-5 mb-1" />
-            Logout
-          </button>
+          ))}
         </nav>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          <header className="flex justify-between items-center bg-white shadow px-4 md:px-6 py-3 sticky top-0 z-40">
-            <Image
-              src={logo}
-              alt="Logo"
-              className="h-[60px] w-[60px] md:h-[100px] md:w-[100px]"
-            />
+        
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="bg-white shadow-md sticky top-0 z-40">
+          <div className="flex flex-col md:flex-row items-center justify-between px-4 py-4 gap-4">
+           <Image src={logo} alt="Logo" className="h-[60px] w-[60px] md:h-[100px] md:w-[100px]" />
+          <div className="md:hidden">
+            </div>
+
+            {/* MEPSC Announcement */}
+            <div className="flex-1 flex justify-center">
+              <Link href="/schedule" className="group relative">
+                <div className="bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs md:text-sm lg:text-base px-5 py-3 rounded-xl shadow-2xl transition-all transform hover:scale-105 animate-pulse text-center leading-tight">
+                  <span className="tracking-wider block">MEPSC ASSESSMENT</span>
+                  <span className="tracking-wider block">STARTS FROM TOMORROW</span>
+                  <span className="text-xs opacity-90 block mt-1">
+                    Tap to view your schedule
+                  </span>
+                </div>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-4 whitespace-nowrap shadow-2xl">
+                    Click to view Exam Schedule
+                  </div>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-gray-900"></div>
+                </div>
+              </Link>
+            </div>
 
             {/* User Info */}
-            <div className="flex md:ml-[600px] gap-2">
-              <User2 className="w-5 h-5 text-gray-700" />
-              <div className="text-sm text-gray-800 text-right">
-                <div className="font-semibold truncate max-w-[150px] md:max-w-none">
-                  {getUserDisplayName()}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 text-right">
+                <User2 className="w-8 h-8 text-gray-700" />
+                <div>
+                  <p className="text-xs text-gray-500">Welcome back,</p>
+                  <p className="font-bold text-gray-800 truncate max-w-[160px]">
+                    {getUserDisplayName()}
+                  </p>
                 </div>
               </div>
+              <button
+                onClick={handleSignOut}
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Sign Out</span>
+              </button>
             </div>
+          </div>
+        </header>
 
-            {/* Desktop Logout */}
-            <button
-              onClick={handleSignOut}
-              className="hidden md:flex items-center gap-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-            >
-              <LogOut className="w-5 h-5" />
-              Sign Out
-            </button>
-          </header>
-
-          {/* Coming Soon Message */}
-          <main className="flex-1 flex items-center justify-center bg-gray-100">
-            <div className="text-center p-10 bg-white rounded-2xl shadow-lg">
-              <h1 className="text-4xl font-bold text-gray-800 mb-4">
+        {/* Main Content */}
+        <main className="flex-1 p-6 md:p-10">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center p-16 bg-white rounded-3xl shadow-2xl border border-gray-200">
+              <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 mb-6">
                 <em>Coming Soon</em>
               </h1>
-              
+             
             </div>
-          </main>
-        </div>
+          </div>
+        </main>
+
+        {/* Mobile Bottom Navigation - Horizontal Scroll */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0062cc]/95 backdrop-blur-sm text-white z-50 shadow-2xl">
+          <div className="flex overflow-x-auto scrollbar-hide py-3 px-2">
+            {[
+              { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
+              { href: "/results", icon: ClipboardList, label: "Results" },
+              { href: "/sessions", icon: ClipboardList, label: "Sessions" },
+              { href: "/previous", icon: History, label: "Prev" },
+              { href: "/vlogs", icon: ClipboardList, label: "Vlogs" },
+              { href: "/schedule", icon: GraduationCap, label: "Schedule" },
+              { href: "/modelpaper", icon: ClipboardPenLine, label: "Papers" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex flex-col items-center min-w-[70px] px-3 py-2 text-xs font-medium"
+              >
+                <item.icon className="w-6 h-6 mb-1" />
+                {item.label}
+              </Link>
+            ))}
+            <button
+              onClick={handleSignOut}
+              className="flex flex-col items-center min-w-[70px] px-3 py-2 text-xs font-medium text-red-200"
+            >
+              <LogOut className="w-6 h-6 mb-1" />
+              Logout
+            </button>
+          </div>
+        </nav>
       </div>
-    </>
+
+      {/* Hide scrollbar */}
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </div>
   );
 }

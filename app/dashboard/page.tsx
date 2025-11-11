@@ -15,7 +15,7 @@ import {
   ExternalLink,
   History,
   GraduationCap,
-  ClipboardPenLine
+  ClipboardPenLine,
 } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
@@ -32,23 +32,23 @@ import { format, addMinutes, isWithinInterval } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 
 /* -------------------------------------------------
-   NEW: Email → Name JSON (email as key, name as value)
+   NEW: Email → Name JSON
    ------------------------------------------------- */
 import emailNamePairs from "../../public/names.json";
 
 /* -------------------------------------------------
-   Types – MATCH DB column names exactly
+   Types
    ------------------------------------------------- */
 interface Session {
   sessionid: number;
   sessiontitle: string;
-  sessiondate: string; // YYYY-MM-DD
-  sessiontime: string; // HH:MM:SS
+  sessiondate: string;
+  sessiontime: string;
   sessionlink: string;
 }
 
 /* -------------------------------------------------
-   Supabase Client (Inline)
+   Supabase Client
    ------------------------------------------------- */
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -92,8 +92,8 @@ export default function Dashboard() {
       new Date(`${s.sessiondate}T${s.sessiontime}`),
       "Asia/Kolkata"
     );
-    const start = addMinutes(sessionDT, -5); // 5 min early
-    const end = addMinutes(sessionDT, 60); // 1 hour long
+    const start = addMinutes(sessionDT, -5);
+    const end = addMinutes(sessionDT, 60);
     return isWithinInterval(now, { start, end });
   };
 
@@ -102,22 +102,18 @@ export default function Dashboard() {
     const fetchSessions = async () => {
       console.log("Fetching sessions from Supabase...");
 
-      const { data, error, status } = await supabase
-        .from("sessions")
-        .select("*");
+      const { data, error } = await supabase.from("sessions").select("*");
 
       if (error) {
-        console.error("Supabase error:", { message: error.message, status });
+        console.error("Supabase error:", error);
         return;
       }
 
       if (!data || data.length === 0) {
-        console.log("No sessions returned.");
         setSessions([]);
         return;
       }
 
-      // ---- Sort chronologically (oldest → newest) ----
       const sorted = (data as Session[]).sort((a, b) => {
         const da = new Date(`${a.sessiondate}T${a.sessiontime}`).getTime();
         const db = new Date(`${b.sessiondate}T${b.sessiontime}`).getTime();
@@ -126,11 +122,9 @@ export default function Dashboard() {
 
       setSessions(sorted);
 
-      // ---- Live detection ----
       const anyLive = sorted.some(isSessionLiveNow);
       setLiveNow(anyLive);
 
-      // ---- Nearest future session (first one after now) ----
       const now = new Date();
       const future = sorted.find(
         (s) => new Date(`${s.sessiondate}T${s.sessiontime}`) > now
@@ -216,13 +210,11 @@ export default function Dashboard() {
   };
 
   /* ---------- Session to show on the badge ---------- */
-  const badgeSession = liveNow
-    ? liveSessions[0] ?? null
-    : nearestFutureSession;
+  const badgeSession = liveNow ? liveSessions[0] ?? null : nearestFutureSession;
 
   return (
     <>
-      {/* Tailwind Animation + Delay Utility */}
+      {/* Tailwind Animation */}
       <style jsx>{`
         @layer utilities {
           @keyframes fadeIn {
@@ -238,9 +230,6 @@ export default function Dashboard() {
           .animate-fadeIn {
             animation: fadeIn 0.2s ease-out;
           }
-          .delay-150 {
-            animation-delay: 150ms;
-          }
         }
       `}</style>
 
@@ -248,46 +237,25 @@ export default function Dashboard() {
         {/* Desktop Sidebar */}
         <aside className="hidden md:flex w-60 bg-[#0062cc] text-white flex-col">
           <nav className="flex-1 mt-4 space-y-3">
-            <Link
-              href="/dashboard"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
+            <Link href="/dashboard" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
               <LayoutDashboard className="w-5 h-5 mr-3" /> Dashboard
             </Link>
-            <Link
-              href="/results"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
+            <Link href="/results" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
               <ClipboardList className="w-5 h-5 mr-3" /> Result
             </Link>
-            <Link
-              href="/sessions"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
+            <Link href="/sessions" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
               <ClipboardList className="w-5 h-5 mr-3" /> Sessions
             </Link>
-            <Link
-              href="/previous"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
+            <Link href="/previous" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
               <History className="w-5 h-5 mr-3" /> Previous Sessions
             </Link>
-            <Link
-              href="/vlogs"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
+            <Link href="/vlogs" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
               <ClipboardList className="w-5 h-5 mr-3" /> B/Vlogs
             </Link>
-            <Link
-              href="/schedule"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
+            <Link href="/schedule" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
               <GraduationCap className="w-5 h-5 mr-3" /> Exam schedule
             </Link>
-            <Link
-              href="/modelpaper"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
+            <Link href="/modelpaper" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
               <ClipboardPenLine className="w-5 h-5 mr-3" /> Model papers
             </Link>
           </nav>
@@ -305,28 +273,18 @@ export default function Dashboard() {
             <ClipboardList className="w-5 h-5 mb-1" /> Sessions
           </Link>
           <Link href="/previous" className="flex flex-col items-center text-xs">
-            <History className="w-5 h-5 mb-1" /> Previous Sessions
+            <History className="w-5 h-5 mb-1" /> Previous
           </Link>
-           <Link href="/vlogs" className="flex flex-col items-center text-xs">
+          <Link href="/vlogs" className="flex flex-col items-center text-xs">
             <ClipboardList className="w-5 h-5 mb-1" /> B/Vlogs
           </Link>
-          <Link
-              href="/schedule"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
-              <GraduationCap className="w-5 h-5 mr-3" /> Exam schedule
-            </Link>
-
-            <Link
-              href="/modelpaper"
-              className="flex items-center px-5 py-2 hover:bg-blue-500 transition"
-            >
-              <ClipboardPenLine className="w-5 h-5 mr-3" /> Model papers
-            </Link>
-          <button
-            onClick={handleSignOut}
-            className="flex flex-col items-center text-xs"
-          >
+          <Link href="/schedule" className="flex flex-col items-center text-xs">
+            <GraduationCap className="w-5 h-5 mb-1" /> Schedule
+          </Link>
+          <Link href="/modelpaper" className="flex flex-col items-center text-xs">
+            <ClipboardPenLine className="w-5 h-5 mb-1" /> Papers
+          </Link>
+          <button onClick={handleSignOut} className="flex flex-col items-center text-xs">
             <LogOut className="w-5 h-5 mb-1" /> Logout
           </button>
         </nav>
@@ -334,29 +292,47 @@ export default function Dashboard() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           <header className="flex justify-between items-center bg-white shadow px-4 md:px-6 py-3 sticky top-0 z-40">
-            <Image
-              src={logo}
-              alt="Logo"
-              className="h-[60px] w-[60px] md:h-[100px] md:w-[100px]"
-            />
+            {/* Left: Logo + MEPSC Announcement */}
+            <div className="flex items-center gap-4">
+              <Image
+                src={logo}
+                alt="Logo"
+                className="h-[60px] w-[60px] md:h-[100px] md:w-[100px]"
+              />
 
+              {/* Beautiful MEPSC Assessment Announcement */}
+              <div className="relative group">
+                <Link href="/schedule">
+                  <div className="bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm md:text-base px-5 py-3 rounded-xl shadow-2xl transition-all transform hover:scale-105 hover:shadow-3xl cursor-pointer animate-pulse flex flex-col items-center leading-tight">
+                    <span className="tracking-wider">MEPSC ASSESSMENT</span>
+                    <span className="tracking-wider">STARTS FROM TOMORROW</span>
+                    <span className="text-xs mt-1 opacity-90">Search your schedule from Exam Schedule</span>
+                  </div>
+                </Link>
+
+                {/* Tooltip */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 z-10">
+                  <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-4 whitespace-nowrap shadow-2xl">
+                    Click to view Exam Schedule
+                  </div>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-gray-900"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Badge + User + Logout */}
             <div className="flex items-center gap-3 md:gap-5">
               {/* Live / Upcoming Badge */}
               {badgeSession && (
                 <button
                   onClick={() => openModal(badgeSession)}
                   className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-full text-white text-xs font-medium transition
-                    ${liveNow
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-red-600 hover:bg-red-700"
-                    }`}
+                    ${liveNow ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}`}
                 >
                   {liveNow ? (
                     <>
                       <Radio className="w-3.5 h-3.5" />
                       <span className="hidden sm:inline">LIVE NOW</span>
-
-                      {/* Outward Wave Effect */}
                       <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <span className="absolute inline-flex h-6 w-6 rounded-full bg-green-400 opacity-75 animate-ping"></span>
                         <span className="absolute inline-flex h-5 w-5 rounded-full bg-green-500 opacity-75 animate-ping delay-150"></span>
@@ -371,7 +347,7 @@ export default function Dashboard() {
                 </button>
               )}
 
-              {/* User Info – FULL NAME FROM EMAIL */}
+              {/* User Info */}
               <div className="flex items-center gap-2">
                 <User2 className="w-5 h-5 text-gray-700" />
                 <div className="text-sm text-gray-800 text-right">
@@ -412,7 +388,7 @@ export default function Dashboard() {
           </main>
         </div>
 
-        {/* Nearest-Session Modal */}
+        {/* Session Modal */}
         {showModal && selectedSession && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative animate-fadeIn">
@@ -420,18 +396,8 @@ export default function Dashboard() {
                 onClick={closeModal}
                 className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
 
@@ -456,17 +422,11 @@ export default function Dashboard() {
               <div className="space-y-2 text-sm text-gray-600 mb-5">
                 <p>
                   <strong>Date:</strong>{" "}
-                  {format(
-                    new Date(selectedSession.sessiondate),
-                    "dd MMM yyyy"
-                  )}
+                  {format(new Date(selectedSession.sessiondate), "dd MMM yyyy")}
                 </p>
                 <p>
                   <strong>Time:</strong>{" "}
-                  {format(
-                    new Date(`1970-01-01T${selectedSession.sessiontime}`),
-                    "hh:mm a"
-                  )}
+                  {format(new Date(`1970-01-01T${selectedSession.sessiontime}`), "hh:mm a")}
                 </p>
               </div>
 
@@ -487,7 +447,7 @@ export default function Dashboard() {
 }
 
 /* -------------------------------------------------
-   Session Card (used in All-Sessions modal – unchanged)
+   Session Card (unchanged)
    ------------------------------------------------- */
 function SessionCard({
   session,
@@ -499,9 +459,7 @@ function SessionCard({
   return (
     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-[#0062cc] transition">
       <div className="flex justify-between items-start mb-2">
-        <h4 className="font-semibold text-gray-800">
-          {session.sessiontitle}
-        </h4>
+        <h4 className="font-semibold text-gray-800">{session.sessiontitle}</h4>
         {isLive && (
           <span className="flex items-center gap-1 text-xs font-medium text-green-600">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
@@ -516,10 +474,7 @@ function SessionCard({
         </p>
         <p className="flex items-center gap-1">
           <Clock className="w-4 h-4" />
-          {format(
-            new Date(`1970-01-01T${session.sessiontime}`),
-            "hh:mm a"
-          )}
+          {format(new Date(`1970-01-01T${session.sessiontime}`), "hh:mm a")}
         </p>
       </div>
       <a

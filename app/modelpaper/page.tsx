@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,7 +11,6 @@ import {
   LogOut,
   Radio,
   Circle,
-  ArrowLeft,
   History,
   GraduationCap,
   ClipboardPenLine,
@@ -44,22 +43,37 @@ interface Session {
   sessionlink: string;
 }
 
-export default function AppliedFinancePage() {
+interface ModelPaper {
+  title: string;
+  src: string;
+  downloadName: string;
+}
+
+export default function ModelPaperPage() {
   const auth = useAuth() as any;
   const router = useRouter();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [liveNow, setLiveNow] = useState(false);
   const [nearestFutureSession, setNearestFutureSession] = useState<Session | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [selectedPaper, setSelectedPaper] = useState<ModelPaper | null>(null);
 
-  // Model Paper PDF (Change this to your actual model paper)
-  const modelPaper = {
-    title: "MEPSC Model Question Paper 2025",
-    src: "/pdf/modelpaper.pdf", // Update path
-    downloadName: "MEPSC_Model_paper.pdf",
-  };
+  // Multiple Model Papers
+  const modelPapers: ModelPaper[] = [
+    {
+      title: "MEPSC Model Question Paper 2025 - 01",
+      src: "/pdf/modelpaper.pdf",
+      downloadName: "MEPSC_Model_Paper_2025.pdf",
+    },
+    {
+      title: "MEPSC Model Question Paper 2025 - 02",
+      src: "/pdf/modelpaper2.pdf",
+      downloadName: "MEPSC_Model_Paper_2025_2.pdf",
+    },
+  ];
 
   // Live session logic
   const isSessionLiveNow = (s: Session): boolean => {
@@ -138,36 +152,76 @@ export default function AppliedFinancePage() {
             to { opacity: 1; transform: scale(1); }
           }
           .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
-          .delay-150 { animation-delay: 150ms; }
         }
       `}</style>
 
       <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:flex w-60 bg-[#0062cc] text-white flex-col">
-          <nav className="flex-1 mt-4 space-y-3">
-            <Link href="/dashboard" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+        {/* Desktop Sidebar - Sticky & Scrollable */}
+        <aside className="hidden md:flex w-60 bg-[#0062cc] text-white flex-col h-screen sticky top-0 overflow-y-auto">
+          
+
+          <nav className="flex-1 px-4 py-4 space-y-1">
+            <Link
+              href="/dashboard"
+              className={`flex items-center px-4 py-3 rounded-lg transition ${
+                pathname === "/dashboard" ? "bg-blue-700 font-semibold" : "hover:bg-blue-500"
+              }`}
+            >
               <LayoutDashboard className="w-5 h-5 mr-3" /> Dashboard
             </Link>
-            <Link href="/results" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+            <Link
+              href="/results"
+              className={`flex items-center px-4 py-3 rounded-lg transition ${
+                pathname === "/results" ? "bg-blue-700 font-semibold" : "hover:bg-blue-500"
+              }`}
+            >
               <ClipboardList className="w-5 h-5 mr-3" /> Result
             </Link>
-            <Link href="/sessions" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+            <Link
+              href="/sessions"
+              className={`flex items-center px-4 py-3 rounded-lg transition ${
+                pathname === "/sessions" ? "bg-blue-700 font-semibold" : "hover:bg-blue-500"
+              }`}
+            >
               <ClipboardList className="w-5 h-5 mr-3" /> Sessions
             </Link>
-            <Link href="/previous" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+            <Link
+              href="/previous"
+              className={`flex items-center px-4 py-3 rounded-lg transition ${
+                pathname === "/previous" ? "bg-blue-700 font-semibold" : "hover:bg-blue-500"
+              }`}
+            >
               <History className="w-5 h-5 mr-3" /> Previous Sessions
             </Link>
-            <Link href="/vlogs" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+            <Link
+              href="/vlogs"
+              className={`flex items-center px-4 py-3 rounded-lg transition ${
+                pathname === "/vlogs" ? "bg-blue-700 font-semibold" : "hover:bg-blue-500"
+              }`}
+            >
               <ClipboardList className="w-5 h-5 mr-3" /> B/Vlogs
             </Link>
-            <Link href="/schedule" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+            <Link
+              href="/schedule"
+              className={`flex items-center px-4 py-3 rounded-lg transition ${
+                pathname === "/schedule" ? "bg-blue-700 font-semibold" : "hover:bg-blue-500"
+              }`}
+            >
               <GraduationCap className="w-5 h-5 mr-3" /> Exam schedule
             </Link>
-            <Link href="/modelpaper" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+            <Link
+              href="/modelpaper"
+              className={`flex items-center px-4 py-3 rounded-lg transition ${
+                pathname === "/modelpaper" ? "bg-blue-700 font-semibold" : "hover:bg-blue-500"
+              }`}
+            >
               <ClipboardPenLine className="w-5 h-5 mr-3" /> Model papers
             </Link>
           </nav>
+
+          <div className="p-4 border-t border-blue-500">
+            
+          </div>
         </aside>
 
         {/* Mobile Bottom Nav */}
@@ -189,7 +243,7 @@ export default function AppliedFinancePage() {
             <div className="flex items-center gap-3 md:gap-5">
               {badgeSession && (
                 <button
-                  onClick={() => { setSelectedSession(badgeSession); setShowModal(true); }}
+                  onClick={() => setSelectedSession(badgeSession)}
                   className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-full text-white text-xs font-medium transition ${
                     liveNow ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"
                   }`}
@@ -212,6 +266,23 @@ export default function AppliedFinancePage() {
                 </button>
               )}
 
+              {/* MEPSC Assessment Announcement */}
+              <div className="relative group">
+                <Link href="/schedule">
+                  <div className="bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm md:text-base px-5 py-3 rounded-xl shadow-2xl transition-all transform hover:scale-105 hover:shadow-3xl cursor-pointer animate-pulse flex flex-col items-center leading-tight">
+                    <span className="tracking-wider">MEPSC ASSESSMENT</span>
+                    <span className="tracking-wider">STARTS FROM TOMORROW</span>
+                    <span className="text-xs mt-1 opacity-90">Search your schedule from Exam Schedule</span>
+                  </div>
+                </Link>
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 z-10">
+                  <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-4 whitespace-nowrap shadow-2xl">
+                    Click to view Exam Schedule
+                  </div>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-gray-900"></div>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2">
                 <User2 className="w-5 h-5 text-gray-700" />
                 <div className="text-sm text-gray-800 text-right">
@@ -232,40 +303,44 @@ export default function AppliedFinancePage() {
 
           {/* Page Content */}
           <main className="flex-1 p-6 md:p-8 bg-gray-100 mb-[80px] md:mb-0">
-            
-
-            {/* Model Paper Card */}
+            {/* Model Papers Grid */}
             <div className="max-w-4xl mx-auto">
               <div className="bg-white rounded-xl shadow-xl overflow-hidden">
                 <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
-                  <h2 className="text-2xl md:text-3xl font-bold">Model Question Paper</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold">Model Question Papers</h2>
+                  <p className="text-blue-100 mt-1">Download or view in fullscreen</p>
                 </div>
 
-                <div className="p-8">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                    {modelPaper.title}
-                  </h3>
+                <div className="p-8 space-y-6">
+                  {modelPapers.map((paper, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                        {paper.title}
+                      </h3>
 
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {/* View Button */}
-                    <button
-                      onClick={() => setShowModal(true)}
-                      className="flex items-center justify-center gap-3 px-6 py-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition shadow-md"
-                    >
-                      <Eye className="w-5 h-5" />
-                      View Fullscreen
-                    </button>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <button
+                          onClick={() => {
+                            setSelectedPaper(paper);
+                            setShowModal(true);
+                          }}
+                          className="flex items-center justify-center gap-3 px-6 py-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition shadow-md"
+                        >
+                          <Eye className="w-5 h-5" />
+                          View Fullscreen
+                        </button>
 
-                    {/* Download Button */}
-                    <a
-                      href={modelPaper.src}
-                      download={modelPaper.downloadName}
-                      className="flex items-center justify-center gap-3 px-6 py-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition shadow-md"
-                    >
-                      <Download className="w-5 h-5" />
-                      Download PDF
-                    </a>
-                  </div>
+                        <a
+                          href={paper.src}
+                          download={paper.downloadName}
+                          className="flex items-center justify-center gap-3 px-6 py-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition shadow-md"
+                        >
+                          <Download className="w-5 h-5" />
+                          Download PDF
+                        </a>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -273,23 +348,35 @@ export default function AppliedFinancePage() {
         </div>
 
         {/* Fullscreen PDF Modal */}
-        {showModal && (
+        {showModal && selectedPaper && (
           <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex flex-col">
             <div className="bg-gray-800 p-4 flex justify-between items-center text-white">
               <h3 className="text-lg font-semibold truncate max-w-[70%]">
-                {modelPaper.title}
+                {selectedPaper.title}
               </h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="p-2 hover:bg-gray-700 rounded-lg transition"
-              >
-                <X className="w-6 h-6" />
-              </button>
+              <div className="flex items-center gap-3">
+                <a
+                  href={selectedPaper.src}
+                  download={selectedPaper.downloadName}
+                  className="text-sm bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded flex items-center gap-1"
+                >
+                  <Download className="w-4 h-4" /> Download
+                </a>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedPaper(null);
+                  }}
+                  className="p-2 hover:bg-gray-700 rounded-lg transition"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
             </div>
             <iframe
-              src={modelPaper.src}
+              src={selectedPaper.src}
               className="flex-1 w-full border-0"
-              title="Model Paper"
+              title={selectedPaper.title}
               allowFullScreen
             />
           </div>
