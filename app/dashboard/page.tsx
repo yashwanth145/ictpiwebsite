@@ -10,9 +10,7 @@ import {
   LogOut,
   Radio,
   Circle,
-  Calendar,
   Clock,
-  ExternalLink,
   History,
   GraduationCap,
   ClipboardPenLine,
@@ -31,14 +29,8 @@ import logo from "../../assets/ICTPL_image.png";
 import { format, addMinutes, isWithinInterval } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 
-/* -------------------------------------------------
-   NEW: Email → Name JSON
-   ------------------------------------------------- */
 import emailNamePairs from "../../public/names.json";
 
-/* -------------------------------------------------
-   Types
-   ------------------------------------------------- */
 interface Session {
   sessionid: number;
   sessiontitle: string;
@@ -47,9 +39,6 @@ interface Session {
   sessionlink: string;
 }
 
-/* -------------------------------------------------
-   Supabase Client
-   ------------------------------------------------- */
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
@@ -61,9 +50,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-/* -------------------------------------------------
-   Email → Name Map
-   ------------------------------------------------- */
 const emailToName = new Map<string, string>();
 Object.entries(emailNamePairs as Record<string, string>).forEach(
   ([email, name]) => {
@@ -71,9 +57,6 @@ Object.entries(emailNamePairs as Record<string, string>).forEach(
   }
 );
 
-/* -------------------------------------------------
-   Dashboard Component
-   ------------------------------------------------- */
 export default function Dashboard() {
   const auth = useAuth() as any;
   const router = useRouter();
@@ -85,7 +68,6 @@ export default function Dashboard() {
   const [nearestFutureSession, setNearestFutureSession] =
     useState<Session | null>(null);
 
-  /* ---------- Helper: is session live now? ---------- */
   const isSessionLiveNow = (s: Session): boolean => {
     const now = toZonedTime(new Date(), "Asia/Kolkata");
     const sessionDT = toZonedTime(
@@ -97,18 +79,13 @@ export default function Dashboard() {
     return isWithinInterval(now, { start, end });
   };
 
-  /* ---------- Fetch ALL sessions ---------- */
   useEffect(() => {
     const fetchSessions = async () => {
-      console.log("Fetching sessions from Supabase...");
-
       const { data, error } = await supabase.from("sessions").select("*");
-
       if (error) {
         console.error("Supabase error:", error);
         return;
       }
-
       if (!data || data.length === 0) {
         setSessions([]);
         return;
@@ -121,7 +98,6 @@ export default function Dashboard() {
       });
 
       setSessions(sorted);
-
       const anyLive = sorted.some(isSessionLiveNow);
       setLiveNow(anyLive);
 
@@ -139,7 +115,6 @@ export default function Dashboard() {
     }
   }, [auth?.user]);
 
-  /* ---------- Auth Guard ---------- */
   useEffect(() => {
     if (!auth) return;
     if (!auth.loading && !auth.user) router.push("/");
@@ -149,7 +124,6 @@ export default function Dashboard() {
     return <p className="text-center mt-10 text-gray-600">Loading...</p>;
   if (!auth.user) return null;
 
-  /* ---------- Handlers ---------- */
   const handleSignOut = async () => {
     try {
       await auth.signOut?.();
@@ -168,39 +142,16 @@ export default function Dashboard() {
     setSelectedSession(null);
   };
 
-  /* ---------- Courses ---------- */
   const courses = [
-    {
-      title: "Indirect Tax Laws Compliance (ITXL)",
-      route: "indirecttax",
-      image: accountancy,
-    },
-    {
-      title: "Business Regulatory Laws Compliance",
-      route: "business",
-      image: complaince,
-    },
-    {
-      title: "Direct Tax Laws Compliance (DTLC)",
-      route: "directtax",
-      image: directax,
-    },
-    {
-      title: "Applied Financial Accounting & Ethics",
-      route: "appliedfinance",
-      image: appliedfinance,
-    },
+    { title: "Indirect Tax Laws Compliance (ITXL)", route: "indirecttax", image: accountancy },
+    { title: "Business Regulatory Laws Compliance", route: "business", image: complaince },
+    { title: "Direct Tax Laws Compliance (DTLC)", route: "directtax", image: directax },
+    { title: "Applied Financial Accounting & Ethics", route: "appliedfinance", image: appliedfinance },
   ];
 
-  /* ---------- Live & Upcoming Filters ---------- */
   const liveSessions = sessions.filter(isSessionLiveNow);
-  const upcomingSessions = sessions.filter(
-    (s) =>
-      new Date(`${s.sessiondate}T${s.sessiontime}`) > new Date() &&
-      !isSessionLiveNow(s)
-  );
+  const badgeSession = liveNow ? liveSessions[0] ?? null : nearestFutureSession;
 
-  /* ---------- Get Full Name from EMAIL ---------- */
   const getUserDisplayName = () => {
     const userEmail = auth.user?.email?.toLowerCase();
     if (userEmail && emailToName.has(userEmail)) {
@@ -209,27 +160,21 @@ export default function Dashboard() {
     return auth.user?.email?.split("@")[0] || "User";
   };
 
-  /* ---------- Session to show on the badge ---------- */
-  const badgeSession = liveNow ? liveSessions[0] ?? null : nearestFutureSession;
+  const fullName = getUserDisplayName().trim();
+  const hasSpace = fullName.includes(" ");
+  const nameParts = fullName.split(" ");
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(" ");
 
   return (
     <>
-      {/* Tailwind Animation */}
-      <style jsx>{`
-        @layer utilities {
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-          .animate-fadeIn {
-            animation: fadeIn 0.2s ease-out;
-          }
+      <style jsx global>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
 
@@ -263,104 +208,108 @@ export default function Dashboard() {
 
         {/* Mobile Bottom Nav */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0062cc]/95 backdrop-blur-sm text-white flex justify-around items-center py-2 shadow-lg z-50">
-          <Link href="/dashboard" className="flex flex-col items-center text-xs">
-            <LayoutDashboard className="w-5 h-5 mb-1" /> Dashboard
-          </Link>
-          <Link href="/results" className="flex flex-col items-center text-xs">
-            <ClipboardList className="w-5 h-5 mb-1" /> Results
-          </Link>
-          <Link href="/sessions" className="flex flex-col items-center text-xs">
-            <ClipboardList className="w-5 h-5 mb-1" /> Sessions
-          </Link>
-          <Link href="/previous" className="flex flex-col items-center text-xs">
-            <History className="w-5 h-5 mb-1" /> Previous
-          </Link>
-          <Link href="/vlogs" className="flex flex-col items-center text-xs">
-            <ClipboardList className="w-5 h-5 mb-1" /> B/Vlogs
-          </Link>
-          <Link href="/schedule" className="flex flex-col items-center text-xs">
-            <GraduationCap className="w-5 h-5 mb-1" /> Schedule
-          </Link>
-          <Link href="/modelpaper" className="flex flex-col items-center text-xs">
-            <ClipboardPenLine className="w-5 h-5 mb-1" /> Papers
-          </Link>
-          <button onClick={handleSignOut} className="flex flex-col items-center text-xs">
-            <LogOut className="w-5 h-5 mb-1" /> Logout
-          </button>
+          <Link href="/dashboard" className="flex flex-col items-center text-xs"><LayoutDashboard className="w-5 h-5 mb-1" /> Dashboard</Link>
+          <Link href="/results" className="flex flex-col items-center text-xs"><ClipboardList className="w-5 h-5 mb-1" /> Results</Link>
+          <Link href="/sessions" className="flex flex-col items-center text-xs"><ClipboardList className="w-5 h-5 mb-1" /> Sessions</Link>
+          <Link href="/previous" className="flex flex-col items-center text-xs"><History className="w-5 h-5 mb-1" /> Previous</Link>
+          <Link href="/vlogs" className="flex flex-col items-center text-xs"><ClipboardList className="w-5 h-5 mb-1" /> B/Vlogs</Link>
+          <Link href="/schedule" className="flex flex-col items-center text-xs"><GraduationCap className="w-5 h-5 mb-1" /> Schedule</Link>
+          <Link href="/modelpaper" className="flex flex-col items-center text-xs"><ClipboardPenLine className="w-5 h-5 mb-1" /> Papers</Link>
+          <button onClick={handleSignOut} className="flex flex-col items-center text-xs"><LogOut className="w-5 h-5 mb-1" /> Logout</button>
         </nav>
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
-          <header className="flex justify-between items-center bg-white shadow px-4 md:px-6 py-3 sticky top-0 z-40">
-            {/* Left: Logo + MEPSC Announcement */}
-            <div className="flex items-center gap-4">
-              <Image
-                src={logo}
-                alt="Logo"
-                className="h-[60px] w-[60px] md:h-[100px] md:w-[100px]"
-              />
+          <header className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white shadow px-4 md:px-6 py-4 sticky top-0 z-40 gap-4">
+            {/* Left: Logo + Announcements */}
+            <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+              <Image src={logo} alt="Logo" className="h-[60px] w-[60px] md:h-[100px] md:w-[100px]" />
 
-              {/* Beautiful MEPSC Assessment Announcement */}
-              <div className="relative group">
-                <Link href="/schedule">
-                  <div className="bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm md:text-base px-5 py-3 rounded-xl shadow-2xl transition-all transform hover:scale-105 hover:shadow-3xl cursor-pointer animate-pulse flex flex-col items-center leading-tight">
-                    <span className="tracking-wider">MEPSC ASSESSMENT</span>
-                    <span className="tracking-wider">STARTS FROM TOMORROW</span>
-                    <span className="text-xs mt-1 opacity-90">Search your schedule from Exam Schedule</span>
-                  </div>
-                </Link>
+              <div className="flex flex-col sm:flex-row gap-3 text-sm">
+                {/* MEPSC ASSESSMENT */}
+                <div className="relative group">
+                  <Link href="/schedule">
+                    <div className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-lg transition-all hover:scale-105 cursor-pointer text-center text-xs leading-tight">
+                      <div className="tracking-wider">MEPSC ASSESSMENT</div>
+                      <div className="text-[11px]">STARTS FROM TOMORROW</div>
+                      <div className="text-[10px] opacity-90">Check Exam Schedule</div>
+                    </div>
+                  </Link>
+                </div>
 
-                {/* Tooltip */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 z-10">
-                  <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-4 whitespace-nowrap shadow-2xl">
-                    Click to view Exam Schedule
-                  </div>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-gray-900"></div>
+                {/* ZOOM VIVA SCHEDULE */}
+                <div className="relative group">
+                  <Link href="/schedule">
+                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold px-4 py-3 rounded-xl shadow-lg transition-all hover:scale-105 cursor-pointer">
+                      <div className="text-xs font-extrabold tracking-wider mb-1.5">ZOOM VIVA</div>
+                      <div className="flex gap-2 overflow-x-auto scrollbar-hide lg:overflow-x-visible lg:flex-nowrap">
+                        <div className="bg-white/25 backdrop-blur-sm rounded-md p-2 min-w-[170px] border border-white/40 flex-shrink-0">
+                          <div className="text-[10px] opacity-90 leading-tight">CTPr RPL Batch 1 (OCT/2025)</div>
+                          <div className="font-bold text-xs mt-0.5">ID: 3561679</div>
+                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-2.5 h-2.5" />9:00AM - 10:00AM</div>
+                        </div>
+                        <div className="bg-white/25 backdrop-blur-sm rounded-md p-2 min-w-[170px] border border-white/40 flex-shrink-0">
+                          <div className="text-[10px] opacity-90 leading-tight">CTPr RPL Batch 2 (OCT/2025)</div>
+                          <div className="font-bold text-xs mt-0.5">ID: 3563068</div>
+                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-2.5 h-2.5" />5:00PM - 6:30PM</div>
+                        </div>
+                        <div className="bg-white/25 backdrop-blur-sm rounded-md p-2 min-w-[170px] border border-white/40 flex-shrink-0">
+                          <div className="text-[10px] opacity-90 leading-tight">CTPr RPL Batch 3 (OCT/2025)</div>
+                          <div className="font-bold text-xs mt-0.5">ID: 3563116</div>
+                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-2.5 h-2.5" />6:30PM - 7:30PM</div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
 
-            {/* Right: Badge + User + Logout */}
-            <div className="flex items-center gap-3 md:gap-5">
-              {/* Live / Upcoming Badge */}
+            {/* Right Side: Badge + Name ON TOP + Sign Out BELOW */}
+            <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+              {/* Live Badge */}
               {badgeSession && (
                 <button
                   onClick={() => openModal(badgeSession)}
-                  className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-full text-white text-xs font-medium transition
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-xs font-medium transition whitespace-nowrap
                     ${liveNow ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}`}
                 >
                   {liveNow ? (
                     <>
-                      <Radio className="w-3.5 h-3.5" />
+                      <Radio className="w-4 h-4" />
                       <span className="hidden sm:inline">LIVE NOW</span>
-                      <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <span className="absolute inline-flex h-6 w-6 rounded-full bg-green-400 opacity-75 animate-ping"></span>
-                        <span className="absolute inline-flex h-5 w-5 rounded-full bg-green-500 opacity-75 animate-ping delay-150"></span>
-                      </span>
                     </>
                   ) : (
                     <>
-                      <Circle className="w-3.5 h-3.5 fill-current text-white" />
+                      <Circle className="w-4 h-4 fill-current" />
                       <span className="hidden sm:inline">UPCOMING</span>
                     </>
                   )}
                 </button>
               )}
 
-              {/* User Info */}
+              {/* Name + User Icon */}
               <div className="flex items-center gap-2">
-                <User2 className="w-5 h-5 text-gray-700" />
-                <div className="text-sm text-gray-800 text-right">
-                  <div className="font-semibold truncate max-w-[150px] md:max-w-none">
-                    {getUserDisplayName()}
+                <User2 className="w-5 h-5 text-gray-700 flex-shrink-0" />
+
+                {hasSpace ? (
+                  // Name ON TOP (vertical)
+                  <div className="text-sm text-gray-800 font-semibold leading-none text-center">
+                    <div>{firstName}</div>
+                    {lastName && <div className="text-sm opacity-90">{lastName}</div>}
                   </div>
-                </div>
+                ) : (
+                  // Single name horizontal
+                  <div className="text-sm text-gray-800 font-semibold truncate" title={fullName}>
+                    {fullName}
+                  </div>
+                )}
               </div>
 
-              {/* Desktop Logout */}
+              {/* Sign Out Button BELOW name (always visible) */}
               <button
                 onClick={handleSignOut}
-                className="hidden md:flex items-center gap-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition text-sm whitespace-nowrap"
               >
                 <LogOut className="w-5 h-5" /> Sign Out
               </button>
@@ -368,21 +317,15 @@ export default function Dashboard() {
           </header>
 
           {/* Course Cards */}
-          <main className="flex-1 p-4 sm:p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6 lg:gap-3 xl:gap-2 overflow-y-auto mb-[80px] md:mb-0 bg-gray-100">
+          <main className="flex-1 p-4 sm:p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-y-auto mb-[80px] md:mb-0 bg-gray-100">
             {courses.map((c, i) => (
               <div
                 key={i}
                 onClick={() => router.push(`/courses/${c.route}`)}
-                className="bg-white shadow-md rounded-xl p-3 sm:p-4 lg:p-2 hover:shadow-lg transition cursor-pointer"
+                className="bg-white shadow-md rounded-xl p-4 hover:shadow-xl transition cursor-pointer transform hover:-translate-y-1"
               >
-                <Image
-                  src={c.image}
-                  alt={c.title}
-                  className="w-full h-36 sm:h-40 object-cover rounded-md mb-3"
-                />
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-1">
-                  {c.title}
-                </h3>
+                <Image src={c.image} alt={c.title} className="w-full h-40 object-cover rounded-md mb-3" />
+                <h3 className="text-lg font-semibold text-gray-800 text-center">{c.title}</h3>
               </div>
             ))}
           </main>
@@ -391,20 +334,16 @@ export default function Dashboard() {
         {/* Session Modal */}
         {showModal && selectedSession && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative animate-fadeIn">
-              <button
-                onClick={closeModal}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-              >
+            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative">
+              <button onClick={closeModal} className="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-
               <div className="flex items-center gap-2 mb-3">
                 {liveNow ? (
                   <div className="flex items-center gap-2 text-green-600">
-                    <Radio className="w-5 h-5 animate-pulse" />
+                    <Radio className="w-5 h-5" />
                     <span className="font-bold text-lg">LIVE NOW</span>
                   </div>
                 ) : (
@@ -414,27 +353,16 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
-
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                {selectedSession.sessiontitle}
-              </h3>
-
+              <h3 className="text-xl font-bold text-gray-800 mb-3">{selectedSession.sessiontitle}</h3>
               <div className="space-y-2 text-sm text-gray-600 mb-5">
-                <p>
-                  <strong>Date:</strong>{" "}
-                  {format(new Date(selectedSession.sessiondate), "dd MMM yyyy")}
-                </p>
-                <p>
-                  <strong>Time:</strong>{" "}
-                  {format(new Date(`1970-01-01T${selectedSession.sessiontime}`), "hh:mm a")}
-                </p>
+                <p><strong>Date:</strong> {format(new Date(selectedSession.sessiondate), "dd MMM yyyy")}</p>
+                <p><strong>Time:</strong> {format(new Date(`1970-01-01T${selectedSession.sessiontime}`), "hh:mm a")}</p>
               </div>
-
               <a
                 href={selectedSession.sessionlink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-[#0062cc] text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition text-center block text-sm"
+                className="w-full bg-[#0062cc] text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition text-center block"
               >
                 Join Google Meet
               </a>
@@ -443,48 +371,5 @@ export default function Dashboard() {
         )}
       </div>
     </>
-  );
-}
-
-/* -------------------------------------------------
-   Session Card (unchanged)
-   ------------------------------------------------- */
-function SessionCard({
-  session,
-  isLive,
-}: {
-  session: Session;
-  isLive: boolean;
-}) {
-  return (
-    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-[#0062cc] transition">
-      <div className="flex justify-between items-start mb-2">
-        <h4 className="font-semibold text-gray-800">{session.sessiontitle}</h4>
-        {isLive && (
-          <span className="flex items-center gap-1 text-xs font-medium text-green-600">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            LIVE
-          </span>
-        )}
-      </div>
-      <div className="text-sm text-gray-600 space-y-1">
-        <p className="flex items-center gap-1">
-          <Calendar className="w-4 h-4" />
-          {format(new Date(session.sessiondate), "dd MMM yyyy")}
-        </p>
-        <p className="flex items-center gap-1">
-          <Clock className="w-4 h-4" />
-          {format(new Date(`1970-01-01T${session.sessiontime}`), "hh:mm a")}
-        </p>
-      </div>
-      <a
-        href={session.sessionlink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#0062cc] hover:underline"
-      >
-        Join Meet <ExternalLink className="w-4 h-4" />
-      </a>
-    </div>
   );
 }
