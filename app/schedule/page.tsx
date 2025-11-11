@@ -94,7 +94,7 @@ export default function MemberSearchPage() {
 
       if (error && error.code === "PGRST116") {
         // No rows returned
-        setError("No member found with that ID. Please check and try again.");
+        setError("Kindly note that Member IDs are not included in the first slot. They will be allocated along with the exam schedule in the second slot.");
       } else if (error) {
         setError("Failed to search. Please try again later.");
         console.error(error);
