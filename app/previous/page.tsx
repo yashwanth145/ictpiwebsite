@@ -11,7 +11,8 @@ import {
   History,
   User2,
   PlayCircle,
-  GraduationCap
+  GraduationCap,
+  ClipboardPenLine
 } from "lucide-react";
 import Image from "next/image";
 
@@ -197,6 +198,9 @@ export default function PreviousSessions() {
           >
             <GraduationCap className="w-5 h-5 mr-3" /> Exam schedule
           </Link>
+          <Link href="/modelpaper" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+              <ClipboardPenLine className="w-5 h-5 mr-3" /> Model papers
+            </Link>
         </nav>
       </aside>
 
@@ -221,6 +225,9 @@ export default function PreviousSessions() {
           <Link href="/schedule" className="flex flex-col items-center text-xs text-gray-700">
             <GraduationCap className="w-6 h-6 mb-1" /> Exam schedule
           </Link>
+          <Link href="/modelpaper" className="flex items-center px-5 py-2 hover:bg-blue-500 transition">
+              <ClipboardPenLine className="w-5 h-5 mr-3" /> Model papers
+            </Link>
           <button onClick={handleSignOut} className="flex flex-col items-center text-xs text-red-600">
             <LogOut className="w-6 h-6 mb-1" /> Logout
           </button>
