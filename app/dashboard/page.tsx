@@ -225,9 +225,9 @@ export default function Dashboard() {
             <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
               <Image src={logo} alt="Logo" className="h-[60px] w-[60px] md:h-[100px] md:w-[100px]" />
 
-              <div className="flex flex-col sm:flex-row gap-3 text-sm">
+              <div className="flex flex-col sm:flex-row gap-3 text-sm w-full">
                 {/* MEPSC ASSESSMENT */}
-                <div className="relative group">
+                <div className="relative group flex-shrink-0">
                   <Link href="/schedule">
                     <div className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-lg transition-all hover:scale-105 cursor-pointer text-center text-xs leading-tight">
                       <div className="tracking-wider">MEPSC ASSESSMENT</div>
@@ -237,26 +237,29 @@ export default function Dashboard() {
                   </Link>
                 </div>
 
-                {/* ZOOM VIVA SCHEDULE */}
-                <div className="relative group">
+                {/* ZOOM VIVA SCHEDULE - FIXED FOR MOBILE */}
+                <div className="relative group flex-1 min-w-0">
                   <Link href="/schedule">
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold px-4 py-3 rounded-xl shadow-lg transition-all hover:scale-105 cursor-pointer">
-                      <div className="text-xs font-extrabold tracking-wider mb-1.5">ZOOM VIVA</div>
-                      <div className="flex gap-2 overflow-x-auto scrollbar-hide lg:overflow-x-visible lg:flex-nowrap">
-                        <div className="bg-white/25 backdrop-blur-sm rounded-md p-2 min-w-[170px] border border-white/40 flex-shrink-0">
+                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold px-3 py-3 rounded-xl shadow-lg transition-all hover:scale-105 cursor-pointer">
+                      <div className="text-xs font-extrabold tracking-wider mb-2">ZOOM VIVA</div>
+                      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 snap-x snap-mandatory">
+                        {/* Batch 1 */}
+                        <div className="bg-white/25 backdrop-blur-sm rounded-lg p-2 min-w-[165px] snap-center border border-white/40 flex-shrink-0">
                           <div className="text-[10px] opacity-90 leading-tight">CTPr RPL Batch 1 (OCT/2025)</div>
                           <div className="font-bold text-xs mt-0.5">ID: 3561679</div>
-                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-2.5 h-2.5" />9:00AM - 10:00AM</div>
+                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-3 h-3" />9:00AM - 10:00AM</div>
                         </div>
-                        <div className="bg-white/25 backdrop-blur-sm rounded-md p-2 min-w-[170px] border border-white/40 flex-shrink-0">
+                        {/* Batch 2 */}
+                        <div className="bg-white/25 backdrop-blur-sm rounded-lg p-3 min-w-[165px] snap-center border border-white/40 flex-shrink-0">
                           <div className="text-[10px] opacity-90 leading-tight">CTPr RPL Batch 2 (OCT/2025)</div>
                           <div className="font-bold text-xs mt-0.5">ID: 3563068</div>
-                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-2.5 h-2.5" />5:00PM - 6:30PM</div>
+                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-3 h-3" />5:00PM - 6:30PM</div>
                         </div>
-                        <div className="bg-white/25 backdrop-blur-sm rounded-md p-2 min-w-[170px] border border-white/40 flex-shrink-0">
-                          <div className="text-[10px] opacity-90 leading-tight">CTPr RPL Batch 3 (OCT/2025)</div>
-                          <div className="font-bold text-xs mt-0.5">ID: 3563116</div>
-                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-2.5 h-2.5" />6:30PM - 7:30PM</div>
+                        {/* Batch 3 */}
+                        <div className="bg-white/25 backdrop-blur-sm rounded-lg p-2 min-w-[165px] snap-center border border-white/40 flex-shrink-0">
+                          <div className="text-[10px] opacity-90 leading-tight">CTPr RPL Batch 3(OCT/2025)</div>
+                          <div className="font-bold text-xs mt-0.5">ID:3563116</div>
+                          <div className="text-[10px] mt-0.5 flex items-center gap-1"><Clock className="w-3 h-3" />6:30PM - 7:30PM</div>
                         </div>
                       </div>
                     </div>
@@ -265,7 +268,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Right Side: Badge + Name ON TOP + Sign Out BELOW */}
+            {/* Right Side: Badge + Name + Sign Out */}
             <div className="flex flex-col items-end gap-2 w-full md:w-auto">
               {/* Live Badge */}
               {badgeSession && (
@@ -293,20 +296,18 @@ export default function Dashboard() {
                 <User2 className="w-5 h-5 text-gray-700 flex-shrink-0" />
 
                 {hasSpace ? (
-                  // Name ON TOP (vertical)
                   <div className="text-sm text-gray-800 font-semibold leading-none text-center">
                     <div>{firstName}</div>
                     {lastName && <div className="text-sm opacity-90">{lastName}</div>}
                   </div>
                 ) : (
-                  // Single name horizontal
                   <div className="text-sm text-gray-800 font-semibold truncate" title={fullName}>
                     {fullName}
                   </div>
                 )}
               </div>
 
-              {/* Sign Out Button BELOW name (always visible) */}
+              {/* Sign Out Button */}
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition text-sm whitespace-nowrap"
