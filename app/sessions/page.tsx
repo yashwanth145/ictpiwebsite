@@ -237,7 +237,7 @@ export default function Dashboard() {
                 <Image src={logo} alt="Logo" className="h-12 w-12" />
                 
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-800">Sessions</h1>
+                  <h1 className="text-2xl font-bold text-gray-800">Session</h1>
                   <p className="text-sm text-gray-500">
                     All upcoming and past sessions
                   </p>
