@@ -6,6 +6,7 @@ import type { CandidateProfile } from "@/lib/candidateExamSchedule";
 import {
   countCompletedExamLevels,
   getExamStatusDisplay,
+  isExamLevelCompleted,
   isPracticeUrl,
   shouldShowAttendExamLink,
 } from "@/lib/examResults";
@@ -218,8 +219,14 @@ export function ExamResultsView({
             !item.isPractice &&
             shouldShowAttendExamLink(item.status);
 
+          const practiceCompleted =
+            item.isPractice &&
+            isExamLevelCompleted(item.status, { isPractice: true });
+
           const cardClasses = item.isPractice
-            ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-indigo-500/60"
+            ? practiceCompleted
+              ? `${statusInfo.color} ${statusInfo.glow}`
+              : "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-indigo-500/60"
             : `${statusInfo.color} ${statusInfo.glow}`;
 
           return (
@@ -236,7 +243,11 @@ export function ExamResultsView({
                 </p>
 
                 {item.isPractice ? (
-                  isPracticeUrl(candidate.self_test_practice) ? (
+                  practiceCompleted ? (
+                    <p className="text-xl font-black drop-shadow-2xl group-hover:scale-125 transition-all duration-500 uppercase mb-6">
+                      {statusInfo.text}
+                    </p>
+                  ) : isPracticeUrl(candidate.self_test_practice) ? (
                     <a
                       href={practiceLink}
                       target="_blank"

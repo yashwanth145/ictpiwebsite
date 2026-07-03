@@ -68,6 +68,7 @@ const IN_PROGRESS_STYLE: ExamStatusDisplay = {
 export const EXAM_RESULT_STATUS_OPTIONS = [
   "PENDING",
   "PASSED",
+  "COMPLETED",
   "YET TO START",
 ] as const;
 
@@ -79,9 +80,8 @@ export function normalizeExamResultStatus(
   if (!value?.trim()) return "";
   const v = value.trim().toUpperCase();
   if (v === "PENDING") return "PENDING";
-  if (v === "PASSED" || v === "COMPLETED" || v.includes("PASSED")) {
-    return "PASSED";
-  }
+  if (v === "COMPLETED" || v.includes("COMPLETED")) return "COMPLETED";
+  if (v === "PASSED" || v.includes("PASSED")) return "PASSED";
   if (v === "YET TO START" || v === "NOT STARTED") return "YET TO START";
   return "";
 }
