@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { formatSupabaseError } from "@/lib/candidateExamSchedule";
-import { listMemberIcpaCertificates } from "@/lib/icpaCertificateStorage";
+import { listMemberIcpaCertificateSlots, listMemberIcpaCertificates } from "@/lib/icpaCertificateStorage";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -38,12 +38,12 @@ export async function GET(req: Request) {
     }
 
     const supabase = getSupabaseAdmin();
-    const certificates = await listMemberIcpaCertificates(
-      supabase,
-      membershipIdParam
-    );
+    const [slots, certificates] = await Promise.all([
+      listMemberIcpaCertificateSlots(supabase, membershipIdParam),
+      listMemberIcpaCertificates(supabase, membershipIdParam),
+    ]);
 
-    return NextResponse.json({ certificates });
+    return NextResponse.json({ slots, certificates });
   } catch (error: unknown) {
     console.error("member-icpa-certificates API error:", error);
     return NextResponse.json(

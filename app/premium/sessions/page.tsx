@@ -171,12 +171,6 @@ export default function Dashboard() {
               <LayoutDashboard className="w-5 h-5" /> Dashboard
             </Link>
             <Link
-              href="/premium/results"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
-            >
-              <ClipboardList className="w-5 h-5" /> Exam Informations
-            </Link>
-            <Link
               href="/premium/sessions"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-600 transition"
             >
@@ -211,10 +205,6 @@ export default function Dashboard() {
           <Link href="/premium" className="flex flex-col items-center text-xs text-blue-600">
             <LayoutDashboard className="w-6 h-6" />
             <span className="mt-1">Dashboard</span>
-          </Link>
-          <Link href="/premium/results" className="flex flex-col items-center text-xs text-gray-600">
-            <ClipboardList className="w-6 h-6" />
-            <span className="mt-1">Exam Information</span>
           </Link>
           <Link href="/premium/sessions" className="flex flex-col items-center text-xs text-gray-600">
             <ClipboardList className="w-6 h-6" />

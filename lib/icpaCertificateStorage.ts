@@ -1,84 +1,186 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { enquiryMembershipIdVariants } from "@/lib/enquiry";
 import {
   certificateFileNameToTitle,
   getCertificatePublicUrl,
-  listFolderRecursive,
-  storageObjectExists,
+  membershipIdVariantsForCerts,
 } from "@/lib/certificateStorageShared";
 
 export const ICPA_CERTIFICATES_BUCKET = "icpa_certificates";
+
+/** Top-level folders inside `icpa_certificates` — one subfolder per membership_id. */
+export const ICPA_CERTIFICATE_TYPES = [
+  {
+    key: "skill_india",
+    label: "Skill India",
+    folder: "skill_india",
+    approvalCol: "icpa_skillindia",
+  },
+  {
+    key: "marksheet",
+    label: "Marksheet",
+    folder: "marksheet",
+    approvalCol: "icpa_marksheet",
+  },
+  {
+    key: "icpa_cert",
+    label: "ICPA Certificate",
+    folder: "icpa_cert",
+    approvalCol: "icpa_generated",
+  },
+] as const;
+
+export type IcpaCertificateKey = (typeof ICPA_CERTIFICATE_TYPES)[number]["key"];
+export type IcpaApprovalColumn =
+  (typeof ICPA_CERTIFICATE_TYPES)[number]["approvalCol"];
+
+export function icpaApprovalColumnForKey(
+  key: IcpaCertificateKey
+): IcpaApprovalColumn {
+  const match = ICPA_CERTIFICATE_TYPES.find((t) => t.key === key);
+  return match?.approvalCol ?? "icpa_generated";
+}
 
 export interface IcpaCertificateFile {
   title: string;
   storagePath: string;
   download: string;
   url: string;
+  folder: string;
+}
+
+export interface IcpaCertificateSlot {
+  key: IcpaCertificateKey;
+  label: string;
+  folder: string;
+  file: IcpaCertificateFile | null;
 }
 
 export function getIcpaCertificatePublicUrl(storagePath: string): string {
   return getCertificatePublicUrl(ICPA_CERTIFICATES_BUCKET, storagePath);
 }
 
-function pathMatchesMembership(storagePath: string, variants: string[]): boolean {
-  const lower = storagePath.toLowerCase();
-  const base = lower.split("/").pop() ?? lower;
-  return variants.some((v) => {
-    const id = String(v).toLowerCase();
-    if (!id) return false;
-    if (lower === `${id}.pdf`) return true;
-    if (base === `${id}.pdf`) return true;
-    if (lower.includes(`/${id}/`) || lower.startsWith(`${id}/`)) return true;
-    if (base.includes(id)) return true;
-    return false;
-  });
+function toIcpaFile(
+  storagePath: string,
+  folder: string
+): IcpaCertificateFile {
+  const name = storagePath.split("/").pop() ?? storagePath;
+  return {
+    title: certificateFileNameToTitle(name),
+    storagePath,
+    download: name,
+    url: getIcpaCertificatePublicUrl(storagePath),
+    folder,
+  };
 }
 
-/** PDFs in `icpa_certificates` whose path/filename matches the member's ID. */
-export async function listMemberIcpaCertificates(
+/** List PDF files under `{folder}/{membershipId}/` for each ID variant. */
+async function listPdfsInMemberFolder(
   supabase: SupabaseClient,
-  membershipIdRaw: string | number
+  folder: string,
+  variants: string[]
 ): Promise<IcpaCertificateFile[]> {
-  const variants = enquiryMembershipIdVariants(membershipIdRaw);
-  if (!variants.length) return [];
-
-  const year = String(new Date().getFullYear());
-  const directPaths = new Set<string>();
-  for (const v of variants) {
-    directPaths.add(`${v}.pdf`);
-    directPaths.add(`${year}/${v}.pdf`);
-    directPaths.add(`${v}/${v}.pdf`);
-    directPaths.add(`${v}/certificate.pdf`);
-  }
-
   const found = new Map<string, IcpaCertificateFile>();
 
-  for (const path of directPaths) {
-    if (!(await storageObjectExists(supabase, ICPA_CERTIFICATES_BUCKET, path))) {
-      continue;
-    }
-    found.set(path, {
-      title: certificateFileNameToTitle(path.split("/").pop() ?? path),
-      storagePath: path,
-      download: path.split("/").pop() ?? path,
-      url: getIcpaCertificatePublicUrl(path),
-    });
-  }
+  for (const variant of variants) {
+    const prefix = `${folder}/${variant}`;
+    const queue = [prefix];
+    const seenPrefixes = new Set<string>();
 
-  const recursive = await listFolderRecursive(supabase, "", ICPA_CERTIFICATES_BUCKET);
-  for (const file of recursive) {
-    if (!pathMatchesMembership(file.path, variants)) continue;
-    if (!found.has(file.path)) {
-      found.set(file.path, {
-        title: certificateFileNameToTitle(file.name),
-        storagePath: file.path,
-        download: file.name,
-        url: getIcpaCertificatePublicUrl(file.path),
-      });
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (seenPrefixes.has(current)) continue;
+      seenPrefixes.add(current);
+
+      const { data, error } = await supabase.storage
+        .from(ICPA_CERTIFICATES_BUCKET)
+        .list(current, {
+          limit: 100,
+          sortBy: { column: "name", order: "asc" },
+        });
+      if (error) continue;
+
+      for (const entry of data ?? []) {
+        const path = `${current}/${entry.name}`;
+        if (entry.id == null) {
+          queue.push(path);
+        } else if (entry.name.toLowerCase().endsWith(".pdf")) {
+          if (!found.has(path)) {
+            found.set(path, toIcpaFile(path, folder));
+          }
+        }
+      }
     }
   }
 
   return [...found.values()].sort((a, b) =>
-    a.title.localeCompare(b.title, undefined, { numeric: true })
+    a.storagePath.localeCompare(b.storagePath, undefined, { numeric: true })
   );
+}
+
+/**
+ * The three ICPA certificate slots for a member.
+ * Files are expected at `icpa_certificates/{folder}/{membership_id}/*.pdf`.
+ */
+export async function listMemberIcpaCertificateSlots(
+  supabase: SupabaseClient,
+  membershipIdRaw: string | number
+): Promise<IcpaCertificateSlot[]> {
+  const variants = membershipIdVariantsForCerts(membershipIdRaw);
+  if (!variants.length) {
+    return ICPA_CERTIFICATE_TYPES.map((type) => ({
+      key: type.key,
+      label: type.label,
+      folder: type.folder,
+      file: null,
+    }));
+  }
+
+  const slots = await Promise.all(
+    ICPA_CERTIFICATE_TYPES.map(async (type) => {
+      const files = await listPdfsInMemberFolder(
+        supabase,
+        type.folder,
+        variants
+      );
+      return {
+        key: type.key,
+        label: type.label,
+        folder: type.folder,
+        file: files[0] ?? null,
+      };
+    })
+  );
+
+  return slots;
+}
+
+/** Flat list of all ICPA PDFs found across the three folders (admin / legacy). */
+export async function listMemberIcpaCertificates(
+  supabase: SupabaseClient,
+  membershipIdRaw: string | number
+): Promise<IcpaCertificateFile[]> {
+  const slots = await listMemberIcpaCertificateSlots(supabase, membershipIdRaw);
+  return slots
+    .map((slot) => slot.file)
+    .filter((file): file is IcpaCertificateFile => file != null);
+}
+
+/** Batch lookup for admin — grouped by membership ID. */
+export async function listIcpaCertificatesForMembers(
+  supabase: SupabaseClient,
+  membershipIds: string[]
+): Promise<Record<string, IcpaCertificateFile[]>> {
+  const ids = [...new Set(membershipIds.map((id) => id.trim()).filter(Boolean))];
+  const result: Record<string, IcpaCertificateFile[]> = Object.fromEntries(
+    ids.map((id) => [id, []])
+  );
+  if (!ids.length) return result;
+
+  await Promise.all(
+    ids.map(async (id) => {
+      result[id] = await listMemberIcpaCertificates(supabase, id);
+    })
+  );
+
+  return result;
 }

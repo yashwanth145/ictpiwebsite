@@ -25,7 +25,6 @@ const PremiumPage = () => {
   ];
 
   const quickLinks = [
-    { href: "/premium/results", label: "Exam Information", icon: ClipboardList },
     { href: "/premium/sessions", label: "Sessions", icon: Radio },
     { href: "/previous", label: "Previous Sessions", icon: History },
     { href: "/modelpaper", label: "Model Papers", icon: ClipboardPenLine },

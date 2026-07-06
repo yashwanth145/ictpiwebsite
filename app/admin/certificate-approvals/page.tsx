@@ -3,29 +3,25 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import { supabase } from "@/lib/Supabase";
+import {
+  ALL_APPROVAL_COLS,
+  CERTIFICATION_APPROVAL_SELECT,
+  GENERATED_FLAG_COLS,
+  type ApprovalColumnKey,
+  type CertificationApprovalRow,
+  isCertificationApproved,
+} from "@/lib/certificationApproval";
 import { Loader2, RefreshCw, Save, Search, ExternalLink } from "lucide-react";
 
 /**
  * Admin → Certificate Approvals
  *
  * One row per membership_id in `certification_approval`. The admin can:
- *   - Toggle the four approval flags (skill_india, ncvet, ctpr_membership,
- *     practicing). Value "1" = allowed, "0"/null = blocked.
- *   - Reset the four "_generated" flags back to "0" so a member can
- *     re-download.
+ *   - Toggle standard and ICPA approval flags ("1" = allowed, "0" = blocked).
+ *   - Reset the four standard "_generated" flags back to "0".
  */
 
-interface ApprovalRow {
-  membership_id: string | null;
-  skill_india: string | null;
-  ncvet: string | null;
-  ctpr_membership: string | null;
-  practicing: string | null;
-  skill_india_generated: string | null;
-  ncvet_generated: string | null;
-  membership_cert_generated: string | null;
-  practicing_generated: string | null;
-}
+type ApprovalRow = CertificationApprovalRow;
 
 interface MemberLite {
   membership_id: string | number;
@@ -48,22 +44,10 @@ interface MemberStoredCerts {
 const NAVY = "#1e2659";
 const PAGE_SIZES = [10, 25, 50, 100];
 
-const APPROVAL_COLS = [
-  { key: "skill_india", label: "Skill India" },
-  { key: "ncvet", label: "NCVET" },
-  { key: "ctpr_membership", label: "CTPr Membership" },
-  { key: "practicing", label: "Practicing" },
-] as const;
+const APPROVAL_COLS = ALL_APPROVAL_COLS;
+const GENERATED_COLS = GENERATED_FLAG_COLS;
 
-const GENERATED_COLS = [
-  { key: "skill_india_generated", label: "Skill India" },
-  { key: "ncvet_generated", label: "NCVET" },
-  { key: "membership_cert_generated", label: "CTPr Membership" },
-  { key: "practicing_generated", label: "Practicing" },
-] as const;
-
-const isOne = (v: string | null | undefined): boolean =>
-  String(v ?? "").trim() === "1";
+const isOne = isCertificationApproved;
 
 export default function CertificateApprovalsPage() {
   const [rows, setRows] = useState<ApprovalRow[]>([]);
@@ -88,7 +72,7 @@ export default function CertificateApprovalsPage() {
 
   /** Local edits keyed by membership_id (only approval columns are draftable). */
   const [drafts, setDrafts] = useState<
-    Record<string, Partial<Pick<ApprovalRow, (typeof APPROVAL_COLS)[number]["key"]>>>
+    Record<string, Partial<Pick<ApprovalRow, ApprovalColumnKey>>>
   >({});
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -138,7 +122,7 @@ export default function CertificateApprovalsPage() {
 
       let q = supabase
         .from("certification_approval")
-        .select("*", { count: "exact" })
+        .select(CERTIFICATION_APPROVAL_SELECT, { count: "exact" })
         .order("membership_id", { ascending: true })
         .range(from, to);
 
@@ -216,7 +200,7 @@ export default function CertificateApprovalsPage() {
   }, [pageSize, search]);
 
   /** Effective value for a row's approval column (draft if set, else DB value). */
-  const effective = (r: ApprovalRow, key: (typeof APPROVAL_COLS)[number]["key"]) => {
+  const effective = (r: ApprovalRow, key: ApprovalColumnKey) => {
     const id = r.membership_id ?? "";
     const draft = drafts[id]?.[key];
     return draft !== undefined ? draft : r[key];
@@ -229,10 +213,7 @@ export default function CertificateApprovalsPage() {
     return APPROVAL_COLS.some((c) => d[c.key] !== undefined && d[c.key] !== r[c.key]);
   };
 
-  const toggleApproval = (
-    r: ApprovalRow,
-    key: (typeof APPROVAL_COLS)[number]["key"]
-  ) => {
+  const toggleApproval = (r: ApprovalRow, key: ApprovalColumnKey) => {
     const id = r.membership_id ?? "";
     if (!id) return;
     const next = isOne(effective(r, key)) ? "0" : "1";
@@ -354,8 +335,8 @@ export default function CertificateApprovalsPage() {
           Certificate Approvals
         </h2>
         <p className="text-sm text-slate-500 mb-5">
-          Toggle download permissions per certificate, or reset the
-          “generated” flags so a member can download again. Source:{" "}
+          Toggle download permissions per certificate (standard and ICPA), or
+          reset the “generated” flags so a member can download again. Source:{" "}
           <span className="font-mono">certification_approval</span>.
         </p>
 

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import { normalizeMembershipId } from "@/lib/membershipId";
 import { supabase } from "@/lib/Supabase";
+import { DEFAULT_CERTIFICATION_APPROVAL } from "@/lib/certificationApproval";
 import { createFirebaseUser } from "@/lib/firebaseAdminClient";
 import {
   Check,
@@ -18,9 +19,11 @@ import {
  * Admin → New Member Requests
  *
  * Lists all rows in `new_member_request` with full details. The admin can:
- *  - Accept  → creates a Firebase Auth account from email + password_hash,
- *              inserts into memberinformation + candidate_exam_schedule,
- *              and deletes the request row.
+ *  - Accept  → creates a Firebase Auth account (password from the request,
+ *              falling back to the default "ictpi123"), inserts into
+ *              memberinformation + candidate_exam_schedule +
+ *              certification_approval + id_card_generated, and deletes the
+ *              request row.
  *  - Reject  → deletes the request row only.
  */
 
@@ -54,6 +57,9 @@ interface RequestRow {
 
 const NAVY = "#1e2659";
 const PAGE_SIZES = [10, 25, 50, 100];
+
+/** Default Firebase password when the request has none stored. */
+const DEFAULT_MEMBER_PASSWORD = "ictpi123";
 
 const SELECT_COLS =
   "id, first_name, middle_name, last_name, mobile_number, email, date_of_birth, password_hash, country, state, district, city, pincode, address_line1, address_line2, address_line3, member_category, membership_number, itp_enrollment_number, gstp_enrollment_number, itp_gstp_combined_enrollment, stp_vat_enrollment_number, cb_license_number, terms_accepted, created_at";
@@ -209,9 +215,10 @@ export default function AdminNewRequestsPage() {
     setToast(null);
     try {
       const email = (r.email ?? "").trim().toLowerCase();
-      const password = (r.password_hash ?? "").toString();
-      if (!email || !password) {
-        throw new Error("Email or password missing on this request.");
+      const password =
+        (r.password_hash ?? "").toString().trim() || DEFAULT_MEMBER_PASSWORD;
+      if (!email) {
+        throw new Error("Email missing on this request.");
       }
 
       // 1) Create Firebase Auth user (secondary app — admin session untouched).
@@ -309,7 +316,50 @@ export default function AdminNewRequestsPage() {
         );
       }
 
-      // 5) Delete the original request.
+      // 5) certification_approval — membership_id varchar(10). All approval
+      //    and generated flags start at "0" (blocked / not generated) so the
+      //    member shows up in Admin → Certificate Approvals.
+      const approvalPayload = {
+        membership_id: membershipIdStr.slice(0, 10),
+        ...DEFAULT_CERTIFICATION_APPROVAL,
+      };
+      const { error: caErr } = await supabase
+        .from("certification_approval")
+        .insert(approvalPayload);
+      if (caErr) {
+        const code = (caErr as { code?: string }).code;
+        // 23505 = row already exists for this membership_id — fine, keep going.
+        if (code !== "23505") {
+          console.error("certification_approval insert failed:", caErr);
+          throw new Error(
+            "Could not insert into certification_approval: " +
+              ((caErr as { message?: string }).message ?? "unknown error")
+          );
+        }
+      }
+
+      // 6) id_card_generated — email varchar(100), name varchar(100),
+      //    membership_id varchar(10). Used by the ID-card generation flow.
+      const idCardPayload = {
+        email: email.slice(0, 100),
+        name: fullName.slice(0, 100) || null,
+        membership_id: membershipIdStr.slice(0, 10),
+      };
+      const { error: idErr } = await supabase
+        .from("id_card_generated")
+        .insert(idCardPayload);
+      if (idErr) {
+        const code = (idErr as { code?: string }).code;
+        if (code !== "23505") {
+          console.error("id_card_generated insert failed:", idErr);
+          throw new Error(
+            "Could not insert into id_card_generated: " +
+              ((idErr as { message?: string }).message ?? "unknown error")
+          );
+        }
+      }
+
+      // 7) Delete the original request.
       const { error: delErr } = await supabase
         .from("new_member_request")
         .delete()
@@ -318,7 +368,7 @@ export default function AdminNewRequestsPage() {
 
       setToast({
         type: "ok",
-        text: `Accepted ${email}. Membership ID ${newMembershipId} added to candidate_exam_schedule and memberinformation; Firebase account created.`,
+        text: `Accepted ${email}. Membership ID ${newMembershipId} added to candidate_exam_schedule, memberinformation, certification_approval and id_card_generated; Firebase account created.`,
       });
       setConfirming(null);
       await load();
@@ -676,9 +726,13 @@ function ConfirmModal({
           {isAccept ? (
             <>
               A Firebase login will be created for{" "}
-              <span className="font-mono">{row.email}</span> and a new
-              membership record will be added to{" "}
-              <span className="font-mono">candidate_exam_schedule</span>.
+              <span className="font-mono">{row.email}</span> (default password{" "}
+              <span className="font-mono">ictpi123</span> if none was set) and
+              records will be added to{" "}
+              <span className="font-mono">candidate_exam_schedule</span>,{" "}
+              <span className="font-mono">memberinformation</span>,{" "}
+              <span className="font-mono">certification_approval</span> and{" "}
+              <span className="font-mono">id_card_generated</span>.
             </>
           ) : (
             <>

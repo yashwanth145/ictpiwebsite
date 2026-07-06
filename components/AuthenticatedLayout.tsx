@@ -82,6 +82,9 @@ export function AuthenticatedLayout({
   const homeHref = isPremium ? "/premium" : "/dashboard";
   const sidebarBgClass = isPremium ? "md:bg-purple-700" : "md:bg-[#0062cc]";
   const mobileSidebarBgClass = isPremium ? "bg-purple-700/95" : "bg-[#0062cc]/95";
+  const navLinks = isPremium
+    ? NAV_LINKS.filter(({ href }) => href !== "/results")
+    : NAV_LINKS;
 
   useEffect(() => {
     if (!auth?.user?.email) return;
@@ -144,7 +147,7 @@ export function AuthenticatedLayout({
           className={`hidden md:sticky md:top-0 md:flex md:flex-col md:w-60 md:h-screen ${sidebarBgClass} md:text-white md:overflow-y-auto scrollbar-hide`}
         >
           <nav className="flex-1 mt-4 space-y-3 px-3">
-            {NAV_LINKS.map(({ href, label, icon: Icon }) => (
+            {navLinks.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={navHrefForPortal(href, isPremium, homeHref)}
@@ -164,9 +167,11 @@ export function AuthenticatedLayout({
           <Link href={homeHref} className="flex flex-col items-center py-1 shrink-0 min-w-[52px]">
             <LayoutDashboard className="w-5 h-5 mb-1" /> {isPremium ? "Dash" : "Dashboard"}
           </Link>
-          <Link href={navHrefForPortal("/results", isPremium, homeHref)} className="flex flex-col items-center py-1 shrink-0 min-w-[52px]">
-            <ClipboardList className="w-5 h-5 mb-1" /> Exam Information
-          </Link>
+          {!isPremium && (
+            <Link href="/results" className="flex flex-col items-center py-1 shrink-0 min-w-[52px]">
+              <ClipboardList className="w-5 h-5 mb-1" /> Exam Information
+            </Link>
+          )}
           <Link href={navHrefForPortal("/sessions", isPremium, homeHref)} className="flex flex-col items-center py-1 shrink-0 min-w-[52px]">
             <ClipboardList className="w-5 h-5 mb-1" /> Sessions
           </Link>

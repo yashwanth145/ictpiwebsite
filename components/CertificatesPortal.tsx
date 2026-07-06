@@ -22,8 +22,17 @@ import { supabase } from "@/lib/Supabase";
 import { loadMemberProfileByMembershipId } from "@/lib/candidateExamSchedule";
 import { PRACTICING_CERT_TEMPLATE_URL } from "@/lib/certificateTemplate";
 import { getStoredMembershipId } from "@/lib/memberSession";
-import type { IcpaCertificateFile } from "@/lib/icpaCertificateStorage";
+import type { IcpaCertificateSlot } from "@/lib/icpaCertificateStorage";
+import {
+  ICPA_CERTIFICATE_TYPES,
+  icpaApprovalColumnForKey,
+} from "@/lib/icpaCertificateStorage";
 import type { CommonCertificateFile } from "@/lib/commonCertificateStorage";
+import {
+  CERTIFICATION_APPROVAL_SELECT,
+  type CertificationApprovalRow,
+  isCertificationApproved,
+} from "@/lib/certificationApproval";
 
 /**
  * Logical certificate keys used in the UI. Each maps to:
@@ -92,20 +101,18 @@ const CERTS: CertConfig[] = [
   },
 ];
 
-interface ApprovalRow {
-  membership_id: string | null;
-  skill_india: string | null;
-  ncvet: string | null;
-  ctpr_membership: string | null;
-  practicing: string | null;
-  skill_india_generated: string | null;
-  ncvet_generated: string | null;
-  membership_cert_generated: string | null;
-  practicing_generated: string | null;
-}
+const ICPA_SLOT_IMAGES: Record<
+  (typeof ICPA_CERTIFICATE_TYPES)[number]["key"],
+  string
+> = {
+  skill_india: "/images/skill-india.svg",
+  marksheet: "/images/ICTPL_image.jpg",
+  icpa_cert: "/images/ICTPL_image.jpg",
+};
 
-const isApproved = (v: string | null | undefined) =>
-  typeof v === "string" && v.trim() === "1";
+interface ApprovalRow extends CertificationApprovalRow {}
+
+const isApproved = isCertificationApproved;
 
 function practicingCertificatePath(membershipId: number) {
   const year = new Date().getFullYear();
@@ -188,9 +195,7 @@ export function CertificatesPortal({
     kind: "success" | "info" | "error";
     text: string;
   } | null>(null);
-  const [icpaCertificates, setIcpaCertificates] = useState<IcpaCertificateFile[]>(
-    []
-  );
+  const [icpaSlots, setIcpaSlots] = useState<IcpaCertificateSlot[]>([]);
   const [icpaLoading, setIcpaLoading] = useState(false);
   const [commonCertificates, setCommonCertificates] = useState<
     CommonCertificateFile[]
@@ -276,9 +281,7 @@ export function CertificatesPortal({
 
         const { data: approvalRows, error: approvalErr } = await supabase
           .from("certification_approval")
-          .select(
-            "membership_id, skill_india, ncvet, ctpr_membership, practicing, skill_india_generated, ncvet_generated, membership_cert_generated, practicing_generated"
-          )
+          .select(CERTIFICATION_APPROVAL_SELECT)
           .in("membership_id", [midStr, midPadded]);
 
         if (approvalErr) throw approvalErr;
@@ -294,20 +297,42 @@ export function CertificatesPortal({
               { cache: "no-store" }
             );
             const body = (await res.json().catch(() => ({}))) as {
-              certificates?: IcpaCertificateFile[];
+              slots?: IcpaCertificateSlot[];
             };
             if (res.ok) {
-              setIcpaCertificates(body.certificates ?? []);
+              setIcpaSlots(
+                body.slots ??
+                  ICPA_CERTIFICATE_TYPES.map((type) => ({
+                    key: type.key,
+                    label: type.label,
+                    folder: type.folder,
+                    file: null,
+                  }))
+              );
             } else {
-              setIcpaCertificates([]);
+              setIcpaSlots(
+                ICPA_CERTIFICATE_TYPES.map((type) => ({
+                  key: type.key,
+                  label: type.label,
+                  folder: type.folder,
+                  file: null,
+                }))
+              );
             }
           } catch {
-            setIcpaCertificates([]);
+            setIcpaSlots(
+              ICPA_CERTIFICATE_TYPES.map((type) => ({
+                key: type.key,
+                label: type.label,
+                folder: type.folder,
+                file: null,
+              }))
+            );
           } finally {
             setIcpaLoading(false);
           }
         } else {
-          setIcpaCertificates([]);
+          setIcpaSlots([]);
           setCommonLoading(true);
           try {
             const res = await fetch(
@@ -757,6 +782,98 @@ export function CertificatesPortal({
     );
   };
 
+  const renderIcpaSlotCard = (slot: IcpaCertificateSlot) => {
+    const imageSrc = getPortalAssetPath(
+      ICPA_SLOT_IMAGES[slot.key],
+      isPremium
+    );
+    const approvalCol = icpaApprovalColumnForKey(slot.key);
+    const approved = approval ? isApproved(approval[approvalCol]) : false;
+    const hasFile = Boolean(slot.file);
+    const canAccess = approved && hasFile;
+
+    let statusLabel = "Not Eligible";
+    let statusColor = "text-gray-500";
+    if (!approval) {
+      statusLabel = "No approval record";
+    } else if (!approved) {
+      statusLabel = "Not Eligible";
+    } else if (!hasFile) {
+      statusLabel = "Approved — awaiting upload";
+      statusColor = "text-amber-700";
+    } else {
+      statusLabel = "Available";
+      statusColor = "text-emerald-700";
+    }
+
+    return (
+      <div
+        key={slot.key}
+        className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full"
+      >
+        <div className="h-48 bg-gradient-to-br from-violet-50 to-indigo-100 flex items-center justify-center p-8">
+          <Image
+            src={imageSrc}
+            alt={`${slot.label} preview`}
+            width={140}
+            height={140}
+            className="object-contain drop-shadow-md opacity-90"
+          />
+        </div>
+
+        <div className="p-6 flex flex-col flex-1">
+          <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">
+            {slot.label}
+          </h3>
+
+          <p className="text-center text-sm mb-4">
+            Status:{" "}
+            <span className={`font-semibold ${statusColor}`}>{statusLabel}</span>
+          </p>
+
+          <p className="text-center text-sm text-gray-500 mb-6 flex-1">
+            {canAccess
+              ? "Your certificate is ready to view or download."
+              : !approved
+                ? "This certificate must be approved by ICTPI before you can access it."
+                : "Approved — the certificate file has not been uploaded yet."}
+          </p>
+
+          {canAccess && slot.file ? (
+            <div className="mt-auto flex flex-col gap-2">
+              <a
+                href={slot.file.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                <CheckCircle2 className="w-5 h-5" />
+                View Certificate
+              </a>
+              <a
+                href={slot.file.url}
+                download={slot.file.download}
+                className="font-medium py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Download className="w-5 h-5" />
+                Download
+              </a>
+            </div>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="mt-auto font-medium py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-sm bg-gray-300 text-white cursor-not-allowed"
+            >
+              <Lock className="w-5 h-5" />
+              {!approved ? "Not Eligible" : "Not Available"}
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderUploadedCertificatesSection = (
     title: string,
     description: string,
@@ -845,41 +962,75 @@ export function CertificatesPortal({
           </div>
         ) : (
           <>
-            <div className="mb-8 flex items-start gap-3 text-blue-900 bg-blue-50 p-4 rounded-xl border border-blue-200">
-              <AlertCircle className="w-6 h-6 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium">
-                  Only certificates approved by ICTPI can be generated.
-                </p>
-                <p className="text-sm mt-1">
-                  Each certificate can be generated only once. Please contact
-                  support if you need a reissue.
-                </p>
+            {!isPremiumRoute && (
+              <div className="mb-8 flex items-start gap-3 text-blue-900 bg-blue-50 p-4 rounded-xl border border-blue-200">
+                <AlertCircle className="w-6 h-6 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">
+                    Only certificates approved by ICTPI can be generated.
+                  </p>
+                  <p className="text-sm mt-1">
+                    Each certificate can be generated only once. Please contact
+                    support if you need a reissue.
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-              {resolvedCerts.map((cert) => renderCard(cert))}
-            </div>
+            {isPremiumRoute ? (
+              <>
+                <div className="mb-8 flex items-start gap-3 text-violet-900 bg-violet-50 p-4 rounded-xl border border-violet-200">
+                  <AlertCircle className="w-6 h-6 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium">
+                      ICPA certificates require admin approval before download.
+                    </p>
+                    <p className="text-sm mt-1">
+                      Skill India, Marksheet, and ICPA Certificate are loaded
+                      from storage after approval is set in{" "}
+                      <span className="font-mono">certification_approval</span>.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                  {(icpaLoading
+                    ? ICPA_CERTIFICATE_TYPES.map((type) => ({
+                        key: type.key,
+                        label: type.label,
+                        folder: type.folder,
+                        file: null,
+                      }))
+                    : icpaSlots
+                  ).map((slot) =>
+                    icpaLoading ? (
+                      <div
+                        key={slot.key}
+                        className="bg-white rounded-2xl shadow-md border border-gray-100 p-8 flex items-center justify-center min-h-[320px]"
+                      >
+                        <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
+                      </div>
+                    ) : (
+                      renderIcpaSlotCard(slot)
+                    )
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+                  {resolvedCerts.map((cert) => renderCard(cert))}
+                </div>
 
-            {!isPremiumRoute &&
-              renderUploadedCertificatesSection(
-                "Your Uploaded Certificates",
-                "Additional certificates uploaded for your membership (practicing, NCVET, Skill India, and more).",
-                commonCertificates,
-                commonLoading,
-                "No uploaded certificates have been found for your account yet.",
-                "from-sky-50 to-blue-100"
-              )}
-
-            {isPremiumRoute &&
-              renderUploadedCertificatesSection(
-                "ICPA Certificates",
-                "Additional certificates uploaded for your membership in the ICPA program.",
-                icpaCertificates,
-                icpaLoading,
-                "No ICPA certificates have been uploaded for your account yet."
-              )}
+                {renderUploadedCertificatesSection(
+                  "Your Uploaded Certificates",
+                  "Additional certificates uploaded for your membership (practicing, NCVET, Skill India, and more).",
+                  commonCertificates,
+                  commonLoading,
+                  "No uploaded certificates have been found for your account yet.",
+                  "from-sky-50 to-blue-100"
+                )}
+              </>
+            )}
           </>
         )}
       </div>
