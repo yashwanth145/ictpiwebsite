@@ -10,7 +10,7 @@ import { createClient } from "@supabase/supabase-js";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
-import { getPortalAssetPath, usePortalMode } from "@/lib/portalTheme";
+import { getPortalAssetPath } from "@/lib/portalTheme";
 import { loadMemberProfileByMembershipId } from "@/lib/candidateExamSchedule";
 import { getStoredMembershipId } from "@/lib/memberSession";
 
@@ -36,7 +36,6 @@ interface ModelPaper {
 export default function ModelPaperPage() {
   const auth = useAuth() as any;
   const router = useRouter();
-  const { isPremium } = usePortalMode();
 
   const [mounted, setMounted] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -58,9 +57,11 @@ export default function ModelPaperPage() {
     { title: "MEPSC Model Question Paper 2025 - 02", src: "/pdf/modelpaper2.pdf", downloadName: "MEPSC_Model_Paper_2025_2.pdf" },
     { title: "MCQ's of all subjects", src: "/pdf/MCQ.pdf", downloadName: "MCQ_all_subjects.pdf" },
   ];
+  // Model papers are shared files stored once in the `notes` bucket, so they
+  // resolve the same way for standard and premium members.
   const resolvedModelPapers = modelPapers.map((paper) => ({
     ...paper,
-    src: getPortalAssetPath(paper.src, isPremium),
+    src: getPortalAssetPath(paper.src, false),
   }));
 
   const isSessionLiveNow = (s: Session): boolean => {
