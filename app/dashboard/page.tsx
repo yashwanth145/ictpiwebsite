@@ -914,7 +914,7 @@ export default function Dashboard() {
                 rel="noopener noreferrer"
                 className="w-full bg-[#0062cc] text-white font-medium py-3.5 rounded-xl hover:bg-blue-700 transition text-center block text-lg shadow-md"
               >
-                Join Google Meet
+                Join Session
               </a>
             </div>
           </div>

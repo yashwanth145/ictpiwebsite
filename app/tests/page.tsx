@@ -9,7 +9,6 @@ import {
 import { createClient } from "@supabase/supabase-js";
 import { format } from "date-fns";
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
-import { getPortalAssetPath, usePortalMode } from "@/lib/portalTheme";
 import { loadMemberProfileByMembershipId } from "@/lib/candidateExamSchedule";
 import { getStoredMembershipId } from "@/lib/memberSession";
 
@@ -34,7 +33,6 @@ interface HtmlTest {
 export default function MockTestsPage() {
   const auth = useAuth() as any;
   const router = useRouter();
-  const { isPremium } = usePortalMode();
 
   const [mounted, setMounted] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -53,23 +51,19 @@ export default function MockTestsPage() {
   const fullscreenRef = useRef<HTMLDivElement>(null);
 
   const htmlTests: HtmlTest[] = [
-    { title: "01.1_INDIRECT_TAXES_GST", src: "/tests/01.1_INDIRECT_TAXES_GST.html" },
-    { title: "01.2 INDIRECT_CUSTOMS", src: "/tests/01.2 INDIRECT_CUSTOMS.html" },
-    { title: "02.1_Advising on Setup up a Business", src: "/tests/02.1_Advising on Setup up a Business.html" },
-    { title: "02.2_Appendix", src: "/tests/02.2_Appendix.html" },
-    { title: "02.3_Business_Maintenance", src: "/tests/02.3_Business_Maintenance.html" },
-    { title: "02.4_Close_Business", src: "/tests/02.4_Close_Business.html" },
-    { title: "4.0 Penalties_Assessment_Amendments_Combined_Quiz", src: "/tests/4.0 Penalties_Assessment_Amendments_Combined_Quiz.html" },
-    { title: "4.1 Income_Tax_Combined_Quiz_v1", src: "/tests/4.1 Income_Tax_Combined_Quiz_v1.html" },
-    { title: "4.2 Advanced_Taxation_Combined_Quiz_v1", src: "/tests/4.2 Advanced_Taxation_Combined_Quiz_v1.html" },
-    { title: "4.3 Corporate_Taxation_Combined_Quiz_v1", src: "/tests/4.3 Corporate_Taxation_Combined_Quiz_v1.html" },
-    { title: "4.4 Special_Taxation_Combined_Quiz", src: "/tests/4.4 Special_Taxation_Combined_Quiz.html" },
-    { title: "4.5 Tax_Assessment_and_Special_Topics_Combined_Quiz", src: "/tests/4.5 Tax_Assessment_and_Special_Topics_Combined_Quiz.html" },
+    { title: "01.1 INDIRECT TAXES GST", src: "/tests/01.1_INDIRECT_TAXES_GST.html" },
+    { title: "01.2 INDIRECT CUSTOMS", src: "/tests/01.2_INDIRECT_CUSTOMS.html" },
+    { title: "02.1 Advising on Setup up a Business", src: "/tests/02.1_Advising_on_Setup_up_a_Business.html" },
+    { title: "02.2 Appendix", src: "/tests/02.2_Appendix.html" },
+    { title: "02.3 Business Maintenance", src: "/tests/02.3_Business_Maintenance.html" },
+    { title: "02.4 Close Business", src: "/tests/02.4_Close_Business.html" },
+    { title: "4.1 Income_Tax_Combined_Quiz_v1", src: "/tests/4.1_Income_Tax_Combined_Quiz_v1.html" },
+    { title: "4.2 Advanced_Taxation_Combined_Quiz_v1", src: "/tests/4.2_Advanced_Taxation_Combined_Quiz_v1.html" },
+    { title: "4.3 Corporate_Taxation_Combined_Quiz_v1", src: "/tests/4.3_Corporate_Taxation_Combined_Quiz_v1.html" },
+    { title: "4.4 Special_Taxation_Combined_Quiz", src: "/tests/4.4_Special_Taxation_Combined_Quiz.html" },
+    { title: "4.5 Tax_Assessment_and_Special_Topics_Combined_Quiz", src: "/tests/4.5_Tax_Assessment_and_Special_Topics_Combined_Quiz.html" },
   ];
-  const resolvedHtmlTests = htmlTests.map((test) => ({
-    ...test,
-    src: getPortalAssetPath(test.src, isPremium),
-  }));
+  const resolvedHtmlTests = htmlTests;
 
   const startFullscreenTest = (test: HtmlTest) => {
     setSelectedHtmlTest(test);
@@ -229,7 +223,6 @@ export default function MockTestsPage() {
           .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
         }
       `}</style>
-
       <AuthenticatedLayout title="Practice Tests" headerActions={liveBadge} maxWidth="md">
             <div className="max-w-4xl mx-auto">
               <div className="bg-white rounded-xl shadow-xl overflow-hidden">

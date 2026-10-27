@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Compliance Quiz - Chapter Wise</title>
+<style>body{font-family:Arial,Helvetica,sans-serif;padding:18px}h1{margin-bottom:6px} .chapter{margin:18px 0;padding:12px;border-radius:8px;border:1px solid #eee} .q{padding:8px 0;border-bottom:1px solid #f0f0f0} .opts{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap} .opt{padding:8px 10px;border:1px solid #ccc;border-radius:6px;cursor:pointer;user-select:none} .opt.selected.correct{background:#c8f7c5;border-color:#2ca02c} .opt.selected.wrong{background:#f7c5c5;border-color:#d02c2c} .button{padding:8px 12px;border-radius:6px;border:none;background:#0b79d0;color:white;cursor:pointer} .stats{margin-top:12px;padding:10px;border:1px solid #ddd;border-radius:8px;display:none} .small{color:#555;font-size:13px}</style>
+<style>
+.opt.selected { background: #fff3b0 !important; border-color: #e0b800 !important; }
+.opt.correct { background: #c8f7c5 !important; border-color: #2ca02c !important; color: #000; }
+.opt.wrong { background: #f7c5c5 !important; border-color: #d02c2c !important; color: #000; }
+</style>
+</head><body>
+<div id="fixed-header" style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #d6ecff;
+  color: #002244;
+  text-align: center;
+  font-weight: bold;
+  padding: 15px 10px;
+  z-index: 9999;
+  border-bottom: 2px solid #aaccee;
+">
+<div style="font-size: 28px; line-height: 1.4;">INSTITUTE OF CHARTERED TAX PRACTITIONERS OF INDIA</div>
+<div style="font-size: 24px; line-height: 1.3;">Mr. R. Dhanasekaran @ Tallysekar, Mr. P. Senthil Kumar, Mr. R. Balasubramanian</div>
+<div style="font-size: 24px; line-height: 1.3;">(Founder Members)</div>
+</div>
+<div style="font-size:22px; color:#002244; font-weight:bold; margin-top:8px;">02.3 Business Maintenance</div>
+
+<style>
+#main-title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  color: blue;
+  font-weight: bold;
+  text-align: center;
+  font-size: 28px;
+  padding: 10px 0;
+  z-index: 1000;
+  border-bottom: 2px solid #0b79d0;
+}
+body {
+  margin-top: 70px;
+}
+</style>
+<h1>Compliance Quiz (Chapter-wise)</h1>
+<p class="small">Each chapter contains 10 questions. Click an option — only that cell is highlighted (green=correct, red=wrong). Click Submit to see totals.</p>
+<div id="all">
+<div class="chapter"><h2>Maintenance of Registers and Records</h2>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Attendance register" data-qno="1">
+<div><strong>1.</strong> Which register is commonly required to record employee attendance?</div>
+<div class="opts">
+<div class="opt" data-val="Attendance register" tabindex="0">Attendance register</div>
+<div class="opt" data-val="Cash book" tabindex="0">Cash book</div>
+<div class="opt" data-val="Fixed assets register" tabindex="0">Fixed assets register</div>
+<div class="opt" data-val="Sales register" tabindex="0">Sales register</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Hazardous material movement register" data-qno="2">
+<div><strong>2.</strong> Which record helps track movement of hazardous materials in an industrial unit?</div>
+<div class="opts">
+<div class="opt" data-val="Inventory book" tabindex="0">Inventory book</div>
+<div class="opt" data-val="Hazardous material movement register" tabindex="0">Hazardous material movement register</div>
+<div class="opt" data-val="Guest book" tabindex="0">Guest book</div>
+<div class="opt" data-val="Purchase register" tabindex="0">Purchase register</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Varies by statute (commonly several years)" data-qno="3">
+<div><strong>3.</strong> Retention period of statutory registers is usually prescribed as:</div>
+<div class="opts">
+<div class="opt" data-val="Never required" tabindex="0">Never required</div>
+<div class="opt" data-val="Always 1 year" tabindex="0">Always 1 year</div>
+<div class="opt" data-val="Varies by statute (commonly several years)" tabindex="0">Varies by statute (commonly several years)</div>
+<div class="opt" data-val="Only while company exists" tabindex="0">Only while company exists</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Wages register" data-qno="4">
+<div><strong>4.</strong> Which register records payment of wages and deductions?</div>
+<div class="opts">
+<div class="opt" data-val="Wages register" tabindex="0">Wages register</div>
+<div class="opt" data-val="Complaints register" tabindex="0">Complaints register</div>
+<div class="opt" data-val="Loan register" tabindex="0">Loan register</div>
+<div class="opt" data-val="Share transfer register" tabindex="0">Share transfer register</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Records are readily accessible and legible when required" data-qno="5">
+<div><strong>5.</strong> Electronic maintenance of registers is allowed provided:</div>
+<div class="opts">
+<div class="opt" data-val="No backups exist" tabindex="0">No backups exist</div>
+<div class="opt" data-val="Records are readily accessible and legible when required" tabindex="0">Records are readily accessible and legible when required</div>
+<div class="opt" data-val="Access is restricted permanently" tabindex="0">Access is restricted permanently</div>
+<div class="opt" data-val="Only paper is allowed" tabindex="0">Only paper is allowed</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Inspection and certification register" data-qno="6">
+<div><strong>6.</strong> Which register is used to record statutory inspections and certificates?</div>
+<div class="opts">
+<div class="opt" data-val="Inspection and certification register" tabindex="0">Inspection and certification register</div>
+<div class="opt" data-val="Visitor entry register" tabindex="0">Visitor entry register</div>
+<div class="opt" data-val="Sales register" tabindex="0">Sales register</div>
+<div class="opt" data-val="Production register" tabindex="0">Production register</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Receipts, issues and balances of inventory" data-qno="7">
+<div><strong>7.</strong> Stock registers must record:</div>
+<div class="opts">
+<div class="opt" data-val="Only obsolete items" tabindex="0">Only obsolete items</div>
+<div class="opt" data-val="Only supplier names" tabindex="0">Only supplier names</div>
+<div class="opt" data-val="Only opening balance" tabindex="0">Only opening balance</div>
+<div class="opt" data-val="Receipts, issues and balances of inventory" tabindex="0">Receipts, issues and balances of inventory</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="The employer or designated officer" data-qno="8">
+<div><strong>8.</strong> Who is typically responsible for maintaining statutory registers?</div>
+<div class="opts">
+<div class="opt" data-val="State government only" tabindex="0">State government only</div>
+<div class="opt" data-val="The employer or designated officer" tabindex="0">The employer or designated officer</div>
+<div class="opt" data-val="Any random employee" tabindex="0">Any random employee</div>
+<div class="opt" data-val="Only the auditor" tabindex="0">Only the auditor</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Penalties and non-compliance action" data-qno="9">
+<div><strong>9.</strong> Failure to maintain required registers may lead to:</div>
+<div class="opts">
+<div class="opt" data-val="Automatic exemption" tabindex="0">Automatic exemption</div>
+<div class="opt" data-val="Penalties and non-compliance action" tabindex="0">Penalties and non-compliance action</div>
+<div class="opt" data-val="Free audit benefits" tabindex="0">Free audit benefits</div>
+<div class="opt" data-val="Higher profits" tabindex="0">Higher profits</div>
+</div></div>
+<div class="q" data-chapter="Maintenance of Registers and Records" data-correct="Accuracy of books and compliance with laws" data-qno="10">
+<div><strong>10.</strong> Periodic reconciliation of records ensures:</div>
+<div class="opts">
+<div class="opt" data-val="Only tax savings" tabindex="0">Only tax savings</div>
+<div class="opt" data-val="Avoiding audits forever" tabindex="0">Avoiding audits forever</div>
+<div class="opt" data-val="Accuracy of books and compliance with laws" tabindex="0">Accuracy of books and compliance with laws</div>
+<div class="opt" data-val="Automatic approvals" tabindex="0">Automatic approvals</div>
+</div></div>
+</div>
+<div class="chapter"><h2>Compliances relating to Environmental Laws</h2>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Central/State Environmental Impact Assessment authority" data-qno="1">
+<div><strong>1.</strong> Which authority often grants environmental clearance for large projects?</div>
+<div class="opts">
+<div class="opt" data-val="Central/State Environmental Impact Assessment authority" tabindex="0">Central/State Environmental Impact Assessment authority</div>
+<div class="opt" data-val="Income Tax Department" tabindex="0">Income Tax Department</div>
+<div class="opt" data-val="ROC" tabindex="0">ROC</div>
+<div class="opt" data-val="Labour Commissioner" tabindex="0">Labour Commissioner</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Environmental Impact Assessment" data-qno="2">
+<div><strong>2.</strong> EIA stands for:</div>
+<div class="opts">
+<div class="opt" data-val="Environmental Impact Assessment" tabindex="0">Environmental Impact Assessment</div>
+<div class="opt" data-val="Energy Import Assessment" tabindex="0">Energy Import Assessment</div>
+<div class="opt" data-val="Emergency Inspection Act" tabindex="0">Emergency Inspection Act</div>
+<div class="opt" data-val="Environmental Insurance Act" tabindex="0">Environmental Insurance Act</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="State Pollution Control Board" data-qno="3">
+<div><strong>3.</strong> Consent to Operate under environmental laws is usually issued by:</div>
+<div class="opts">
+<div class="opt" data-val="State Pollution Control Board" tabindex="0">State Pollution Control Board</div>
+<div class="opt" data-val="Central Excise" tabindex="0">Central Excise</div>
+<div class="opt" data-val="Ministry of Finance" tabindex="0">Ministry of Finance</div>
+<div class="opt" data-val="GSTN" tabindex="0">GSTN</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Hazardous waste management and disposal plans" data-qno="4">
+<div><strong>4.</strong> Industries handling hazardous waste must have:</div>
+<div class="opts">
+<div class="opt" data-val="Only a sales plan" tabindex="0">Only a sales plan</div>
+<div class="opt" data-val="Only a GSTIN" tabindex="0">Only a GSTIN</div>
+<div class="opt" data-val="Hazardous waste management and disposal plans" tabindex="0">Hazardous waste management and disposal plans</div>
+<div class="opt" data-val="No specific plans" tabindex="0">No specific plans</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Periodically as per statutory schedule (monthly/quarterly/annual)" data-qno="5">
+<div><strong>5.</strong> Environmental compliance reports are generally filed:</div>
+<div class="opts">
+<div class="opt" data-val="Only on demand by bank" tabindex="0">Only on demand by bank</div>
+<div class="opt" data-val="Only once at incorporation" tabindex="0">Only once at incorporation</div>
+<div class="opt" data-val="Never required" tabindex="0">Never required</div>
+<div class="opt" data-val="Periodically as per statutory schedule (monthly/quarterly/annual)" tabindex="0">Periodically as per statutory schedule (monthly/quarterly/annual)</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Fines, closure orders or criminal liability" data-qno="6">
+<div><strong>6.</strong> Violation of environmental norms may result in:</div>
+<div class="opts">
+<div class="opt" data-val="Fines, closure orders or criminal liability" tabindex="0">Fines, closure orders or criminal liability</div>
+<div class="opt" data-val="Only warning letters" tabindex="0">Only warning letters</div>
+<div class="opt" data-val="No action" tabindex="0">No action</div>
+<div class="opt" data-val="Immediate tax credit" tabindex="0">Immediate tax credit</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Records and monitoring data as prescribed" data-qno="7">
+<div><strong>7.</strong> Industries must monitor emissions and effluents and maintain:</div>
+<div class="opts">
+<div class="opt" data-val="Only annual summaries" tabindex="0">Only annual summaries</div>
+<div class="opt" data-val="Only verbal confirmations" tabindex="0">Only verbal confirmations</div>
+<div class="opt" data-val="Only reports to customers" tabindex="0">Only reports to customers</div>
+<div class="opt" data-val="Records and monitoring data as prescribed" tabindex="0">Records and monitoring data as prescribed</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Obtain stakeholder inputs and local concerns" data-qno="8">
+<div><strong>8.</strong> Public consultation in EIA process is intended to:</div>
+<div class="opts">
+<div class="opt" data-val="Evade public scrutiny" tabindex="0">Evade public scrutiny</div>
+<div class="opt" data-val="Obtain stakeholder inputs and local concerns" tabindex="0">Obtain stakeholder inputs and local concerns</div>
+<div class="opt" data-val="Generate profits" tabindex="0">Generate profits</div>
+<div class="opt" data-val="Replace technical analysis" tabindex="0">Replace technical analysis</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Specified hazardous wastes with special disposal rules" data-qno="9">
+<div><strong>9.</strong> Battery, biomedical and electronic wastes are examples of:</div>
+<div class="opts">
+<div class="opt" data-val="Specified hazardous wastes with special disposal rules" tabindex="0">Specified hazardous wastes with special disposal rules</div>
+<div class="opt" data-val="Only recyclable goods" tabindex="0">Only recyclable goods</div>
+<div class="opt" data-val="Not regulated" tabindex="0">Not regulated</div>
+<div class="opt" data-val="Only exports" tabindex="0">Only exports</div>
+</div></div>
+<div class="q" data-chapter="Compliances relating to Environmental Laws" data-correct="Workplace exposure to harmful substances and controlling limits" data-qno="10">
+<div><strong>10.</strong> Occupational exposure limits relate to:</div>
+<div class="opts">
+<div class="opt" data-val="Workplace exposure to harmful substances and controlling limits" tabindex="0">Workplace exposure to harmful substances and controlling limits</div>
+<div class="opt" data-val="Only leave policies" tabindex="0">Only leave policies</div>
+<div class="opt" data-val="Only salaries" tabindex="0">Only salaries</div>
+<div class="opt" data-val="Only working hours" tabindex="0">Only working hours</div>
+</div></div>
+</div>
+<div class="chapter"><h2>Compliances under Labour Laws</h2>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="EPF contribution return/e-challan (as applicable)" data-qno="1">
+<div><strong>1.</strong> Provident Fund compliance requires filing of which return monthly/periodic?</div>
+<div class="opts">
+<div class="opt" data-val="GST return" tabindex="0">GST return</div>
+<div class="opt" data-val="EPF contribution return/e-challan (as applicable)" tabindex="0">EPF contribution return/e-challan (as applicable)</div>
+<div class="opt" data-val="Income tax return" tabindex="0">Income tax return</div>
+<div class="opt" data-val="Customs return" tabindex="0">Customs return</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Payment of Gratuity Act, 1972" data-qno="2">
+<div><strong>2.</strong> Which act governs payment of gratuity to employees?</div>
+<div class="opts">
+<div class="opt" data-val="Factories Act" tabindex="0">Factories Act</div>
+<div class="opt" data-val="Companies Act" tabindex="0">Companies Act</div>
+<div class="opt" data-val="Payment of Gratuity Act, 1972" tabindex="0">Payment of Gratuity Act, 1972</div>
+<div class="opt" data-val="Minimum Wages Act" tabindex="0">Minimum Wages Act</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Provision of first-aid, fencing of machines and safety measures" data-qno="3">
+<div><strong>3.</strong> Factories Act requires which of the following for worker safety?</div>
+<div class="opts">
+<div class="opt" data-val="Provision of first-aid, fencing of machines and safety measures" tabindex="0">Provision of first-aid, fencing of machines and safety measures</div>
+<div class="opt" data-val="No measures required" tabindex="0">No measures required</div>
+<div class="opt" data-val="Only internet access" tabindex="0">Only internet access</div>
+<div class="opt" data-val="Only salary increase" tabindex="0">Only salary increase</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Central/State authorities for scheduled employments" data-qno="4">
+<div><strong>4.</strong> Minimum Wages must be paid as prescribed by:</div>
+<div class="opts">
+<div class="opt" data-val="Central/State authorities for scheduled employments" tabindex="0">Central/State authorities for scheduled employments</div>
+<div class="opt" data-val="Only after year end" tabindex="0">Only after year end</div>
+<div class="opt" data-val="Only central govt for all" tabindex="0">Only central govt for all</div>
+<div class="opt" data-val="Employer discretion" tabindex="0">Employer discretion</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Working hours, leave, overtime and registration" data-qno="5">
+<div><strong>5.</strong> Shops &amp; Establishment compliance typically covers:</div>
+<div class="opts">
+<div class="opt" data-val="Working hours, leave, overtime and registration" tabindex="0">Working hours, leave, overtime and registration</div>
+<div class="opt" data-val="Only tax payments" tabindex="0">Only tax payments</div>
+<div class="opt" data-val="Only GST filings" tabindex="0">Only GST filings</div>
+<div class="opt" data-val="Only exports" tabindex="0">Only exports</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Maternity Benefit Act (and related state rules)" data-qno="6">
+<div><strong>6.</strong> Maternity benefits are covered under which law commonly?</div>
+<div class="opts">
+<div class="opt" data-val="GST law" tabindex="0">GST law</div>
+<div class="opt" data-val="Company Act" tabindex="0">Company Act</div>
+<div class="opt" data-val="Maternity Benefit Act (and related state rules)" tabindex="0">Maternity Benefit Act (and related state rules)</div>
+<div class="opt" data-val="Payment of Bonus Act" tabindex="0">Payment of Bonus Act</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Correct contribution, compliance and avoid penalties" data-qno="7">
+<div><strong>7.</strong> Statutory audits of payroll records help ensure:</div>
+<div class="opts">
+<div class="opt" data-val="Correct contribution, compliance and avoid penalties" tabindex="0">Correct contribution, compliance and avoid penalties</div>
+<div class="opt" data-val="Only profit maximization" tabindex="0">Only profit maximization</div>
+<div class="opt" data-val="No legal benefit" tabindex="0">No legal benefit</div>
+<div class="opt" data-val="Only employee happiness" tabindex="0">Only employee happiness</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Registered and maintain labour compliances (PF/ESI as applicable)" data-qno="8">
+<div><strong>8.</strong> Contractor compliance includes ensuring contractors are:</div>
+<div class="opts">
+<div class="opt" data-val="Registered and maintain labour compliances (PF/ESI as applicable)" tabindex="0">Registered and maintain labour compliances (PF/ESI as applicable)</div>
+<div class="opt" data-val="Only suppliers" tabindex="0">Only suppliers</div>
+<div class="opt" data-val="Only consultants" tabindex="0">Only consultants</div>
+<div class="opt" data-val="Not relevant" tabindex="0">Not relevant</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Employee State Insurance and Workmen's Compensation provisions" data-qno="9">
+<div><strong>9.</strong> Compensation for workplace injury is covered under:</div>
+<div class="opts">
+<div class="opt" data-val="Only EPF" tabindex="0">Only EPF</div>
+<div class="opt" data-val="Only income tax" tabindex="0">Only income tax</div>
+<div class="opt" data-val="Employee State Insurance and Workmen's Compensation provisions" tabindex="0">Employee State Insurance and Workmen's Compensation provisions</div>
+<div class="opt" data-val="Only GST" tabindex="0">Only GST</div>
+</div></div>
+<div class="q" data-chapter="Compliances under Labour Laws" data-correct="Maintained and produced for inspection as required" data-qno="10">
+<div><strong>10.</strong> Record of wages, overtime and attendance should be:</div>
+<div class="opts">
+<div class="opt" data-val="Only digital without backup" tabindex="0">Only digital without backup</div>
+<div class="opt" data-val="Kept secret" tabindex="0">Kept secret</div>
+<div class="opt" data-val="Maintained and produced for inspection as required" tabindex="0">Maintained and produced for inspection as required</div>
+<div class="opt" data-val="Only for managerial staff" tabindex="0">Only for managerial staff</div>
+</div></div>
+</div>
+<div class="chapter"><h2>Identifying laws applicable to Various Industries and their compliances</h2>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Food Safety and Standards Act and FSSAI regulations" data-qno="1">
+<div><strong>1.</strong> Which law is most relevant for food industry safety compliance?</div>
+<div class="opts">
+<div class="opt" data-val="Factories Act only" tabindex="0">Factories Act only</div>
+<div class="opt" data-val="GST only" tabindex="0">GST only</div>
+<div class="opt" data-val="Food Safety and Standards Act and FSSAI regulations" tabindex="0">Food Safety and Standards Act and FSSAI regulations</div>
+<div class="opt" data-val="Companies Act" tabindex="0">Companies Act</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Drugs and Cosmetics Act and GMP norms" data-qno="2">
+<div><strong>2.</strong> Pharmaceutical manufacturing must comply with:</div>
+<div class="opts">
+<div class="opt" data-val="Only state municipal rules" tabindex="0">Only state municipal rules</div>
+<div class="opt" data-val="Labour laws only" tabindex="0">Labour laws only</div>
+<div class="opt" data-val="Drugs and Cosmetics Act and GMP norms" tabindex="0">Drugs and Cosmetics Act and GMP norms</div>
+<div class="opt" data-val="Income tax laws only" tabindex="0">Income tax laws only</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Environmental and labour regulations plus specific textile policies" data-qno="3">
+<div><strong>3.</strong> Textile units often require compliance with:</div>
+<div class="opts">
+<div class="opt" data-val="Only customs laws" tabindex="0">Only customs laws</div>
+<div class="opt" data-val="Only trademark laws" tabindex="0">Only trademark laws</div>
+<div class="opt" data-val="Environmental and labour regulations plus specific textile policies" tabindex="0">Environmental and labour regulations plus specific textile policies</div>
+<div class="opt" data-val="None" tabindex="0">None</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Data protection, labour laws and contractual compliance" data-qno="4">
+<div><strong>4.</strong> IT/ITeS companies mostly focus on:</div>
+<div class="opts">
+<div class="opt" data-val="Data protection, labour laws and contractual compliance" tabindex="0">Data protection, labour laws and contractual compliance</div>
+<div class="opt" data-val="Only factory safety" tabindex="0">Only factory safety</div>
+<div class="opt" data-val="Only agriculture laws" tabindex="0">Only agriculture laws</div>
+<div class="opt" data-val="Only customs" tabindex="0">Only customs</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Building permits, environmental clearances and labour compliances" data-qno="5">
+<div><strong>5.</strong> Construction industry requires which specific compliances?</div>
+<div class="opts">
+<div class="opt" data-val="Only export paperwork" tabindex="0">Only export paperwork</div>
+<div class="opt" data-val="Only trademark" tabindex="0">Only trademark</div>
+<div class="opt" data-val="Building permits, environmental clearances and labour compliances" tabindex="0">Building permits, environmental clearances and labour compliances</div>
+<div class="opt" data-val="Only GST registration" tabindex="0">Only GST registration</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Identifying central, state and local laws applicable to operations" data-qno="6">
+<div><strong>6.</strong> Compliance mapping for an industry should start with:</div>
+<div class="opts">
+<div class="opt" data-val="Only HR policies" tabindex="0">Only HR policies</div>
+<div class="opt" data-val="Only GST laws" tabindex="0">Only GST laws</div>
+<div class="opt" data-val="Identifying central, state and local laws applicable to operations" tabindex="0">Identifying central, state and local laws applicable to operations</div>
+<div class="opt" data-val="Only company law" tabindex="0">Only company law</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="SEBI, RBI, TRAI, FSSAI depending on sector" data-qno="7">
+<div><strong>7.</strong> Sectoral regulators may include:</div>
+<div class="opts">
+<div class="opt" data-val="Only Labour Commissioner" tabindex="0">Only Labour Commissioner</div>
+<div class="opt" data-val="SEBI, RBI, TRAI, FSSAI depending on sector" tabindex="0">SEBI, RBI, TRAI, FSSAI depending on sector</div>
+<div class="opt" data-val="Only GSTN" tabindex="0">Only GSTN</div>
+<div class="opt" data-val="Only ROC" tabindex="0">Only ROC</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Foreign trade policy, customs, and export regulations" data-qno="8">
+<div><strong>8.</strong> Export-oriented units must comply with:</div>
+<div class="opts">
+<div class="opt" data-val="Only municipal rules" tabindex="0">Only municipal rules</div>
+<div class="opt" data-val="Only state taxes" tabindex="0">Only state taxes</div>
+<div class="opt" data-val="Foreign trade policy, customs, and export regulations" tabindex="0">Foreign trade policy, customs, and export regulations</div>
+<div class="opt" data-val="Only domestic labour laws" tabindex="0">Only domestic labour laws</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Type of business, thresholds and regulatory authority timelines" data-qno="9">
+<div><strong>9.</strong> Periodic statutory filings depend on:</div>
+<div class="opts">
+<div class="opt" data-val="Only revenue" tabindex="0">Only revenue</div>
+<div class="opt" data-val="Type of business, thresholds and regulatory authority timelines" tabindex="0">Type of business, thresholds and regulatory authority timelines</div>
+<div class="opt" data-val="Only company size" tabindex="0">Only company size</div>
+<div class="opt" data-val="Only number of employees" tabindex="0">Only number of employees</div>
+</div></div>
+<div class="q" data-chapter="Identifying laws applicable to Various Industries and their compliances" data-correct="Track due dates and responsibilities and reduce risk of penalties" data-qno="10">
+<div><strong>10.</strong> A compliance calendar helps to:</div>
+<div class="opts">
+<div class="opt" data-val="Increase taxes" tabindex="0">Increase taxes</div>
+<div class="opt" data-val="Avoid all compliance" tabindex="0">Avoid all compliance</div>
+<div class="opt" data-val="Track due dates and responsibilities and reduce risk of penalties" tabindex="0">Track due dates and responsibilities and reduce risk of penalties</div>
+<div class="opt" data-val="Replace internal controls" tabindex="0">Replace internal controls</div>
+</div></div>
+</div>
+</div><br/><div class="stats" id="results"></div>
+<script>
+(function(){
+  const qs = document.querySelectorAll('.q');
+  function normalize(s){return String(s||'').trim().toLowerCase();}
+  qs.forEach(q=>{
+    q.querySelectorAll('.opt').forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        // clear only this question's options
+        q.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected','correct','wrong'));
+        opt.classList.add('selected');
+        const sel = normalize(opt.dataset.val);
+        const cor = normalize(q.dataset.correct);
+        if(sel === cor) opt.classList.add('correct'); else opt.classList.add('wrong');
+      });
+      opt.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); opt.click(); } });
+    });
+  });
+  document.getElementById('submit').addEventListener('click', ()=>{
+    const total = qs.length;
+    let attended = 0, correct = 0, incorrect = 0;
+    qs.forEach(q=>{
+      const sel = q.querySelector('.opt.selected');
+      if(sel){ attended++; const s = normalize(sel.dataset.val); const c = normalize(q.dataset.correct); if(s===c) correct++; else incorrect++; }
+    });
+    const unattended = total - attended;
+    const res = document.getElementById('results');
+    res.style.display = 'block';
+    res.innerHTML = '<b>Total Questions:</b> ' + total + '<br>' +
+                    '<b>Total Attended Questions:</b> ' + attended + '<br>' +
+                    '<b>Total Unattended Questions:</b> ' + unattended + '<br>' +
+                    '<b>Total Correct Answers:</b> ' + correct + '<br>' +
+                    '<b>Total Incorrect Answers:</b> ' + incorrect;
+    res.scrollIntoView({behavior:"smooth"});
+  });
+})();
+</script>
+<div id="results-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  background:#fff; border:2px solid #0b79d0; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.3);
+  padding:30px; max-width:500px; width:90%; text-align:center; z-index:10000;">
+<h3 style="color:#0b79d0; margin-bottom:15px;">Quiz Results</h3>
+<div id="results-content" style="font-size:16px; line-height:1.6;"></div>
+<div id="passfail" style="margin-top:10px; font-weight:bold; font-size:22px;"></div>
+<div id="summary-buttons" style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
+<button id="clear-summary" style="background:#888; color:white; border:none; padding:10px 20px;
+        border-radius:8px; cursor:pointer;">Clear Summary</button>
+<button id="close-modal" style="background:#0b79d0; color:white; border:none; padding:10px 20px;
+        border-radius:8px; cursor:pointer;">Close</button>
+</div>
+</div>
+<div id="bottom-buttons" style="position:fixed; bottom:20px; right:20px; display:flex; gap:10px; flex-wrap:wrap; z-index:9999;">
+<button id="submit-all" style="background:#0b79d0; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer;">Submit All</button>
+<button id="reset-quiz" style="background:#ccc; color:black; border:none; padding:12px 20px; border-radius:8px; cursor:pointer;">Reset Quiz</button>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const questions = document.querySelectorAll('.q');
+  const submitAllBtn = document.getElementById('submit-all');
+  const resetBtn = document.getElementById('reset-quiz');
+  const resultsModal = document.getElementById('results-modal');
+  const resultsContent = document.getElementById('results-content');
+  const passFailText = document.getElementById('passfail');
+  const clearSummary = document.getElementById('clear-summary');
+  const closeModal = document.getElementById('close-modal');
+
+  document.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const siblings = opt.parentElement.querySelectorAll('.opt');
+      siblings.forEach(s => s.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+
+  submitAllBtn.addEventListener('click', () => {
+    let total = questions.length;
+    let answered = 0, correct = 0, wrong = 0;
+
+    questions.forEach(q => {
+      const selected = q.querySelector('.opt.selected');
+      const correctVal = q.dataset.correct;
+      if (selected) {
+        answered++;
+        if (selected.textContent.trim() === correctVal.trim()) {
+          selected.classList.add('correct');
+          correct++;
+        } else {
+          selected.classList.add('wrong');
+          wrong++;
+        }
+      }
+    });
+
+    const unanswered = total - answered;
+    const percent = Math.round((correct / total) * 100);
+    const pass = percent >= 50;
+
+    resultsContent.innerHTML = `
+      <b>Total Questions:</b> ${total}<br>
+      <b>Answered:</b> ${answered}<br>
+      <b>Unanswered:</b> ${unanswered}<br>
+      <b>Correct:</b> ${correct}<br>
+      <b>Incorrect:</b> ${wrong}<br>
+      <b>Percentage:</b> ${percent}%
+    `;
+
+    passFailText.textContent = pass ? 'PASS' : 'FAIL';
+    passFailText.style.color = pass ? '#2ca02c' : '#d02c2c';
+
+    resultsModal.style.display = 'block';
+  });
+
+  resetBtn.addEventListener('click', () => {
+    document.querySelectorAll('.opt').forEach(o => {
+      o.classList.remove('selected', 'correct', 'wrong');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target && e.target.id === 'clear-summary') {
+      resultsContent.innerHTML = '';
+      passFailText.textContent = '';
+    }
+    if (e.target && e.target.id === 'close-modal') {
+      resultsModal.style.display = 'none';
+    }
+  });
+});
+</script>
+</body></html>
